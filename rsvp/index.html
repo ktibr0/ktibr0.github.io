@@ -4,15 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RSVP Dinner Game</title>
-<script src="ruffle/ruffle.js"></script>
+  <script src="ruffle/ruffle.js"></script>
   <style>
-    body { margin: 0; background: #000; display: flex; 
-           justify-content: center; align-items: center; 
+    body { margin: 0; background: #000; display: flex;
+           justify-content: center; align-items: center;
            height: 100vh; }
-    ruffle-player { width: 800px; height: 600px; max-width: 100vw; }
+    #player { width: 800px; height: 600px; max-width: 100vw; }
   </style>
 </head>
 <body>
-  <ruffle-player src="rsvp.swf"></ruffle-player>
+  <div id="player"></div>
+  <script>
+    window.addEventListener("load", function() {
+      var ruffle = window.RufflePlayer.newest();
+      var player = ruffle.createPlayer();
+      var container = document.getElementById("player");
+      container.appendChild(player);
+      player.style.width = "100%";
+      player.style.height = "100%";
+      player.load("rsvp.swf");
+    });
+  </script>
 </body>
 </html>
