@@ -233,7 +233,7 @@
   <main class="grid">
 
     <!-- 1. Криптограф -->
-    <a class="card" href="games/cryptographer/index.html" tabindex="0">
+    <a class="card" href="cryptographer/index.html" tabindex="0">
       <div class="card-stripe stripe-gold"></div>
       <div class="card-icon">🔐</div>
       <div class="card-body">
@@ -263,7 +263,7 @@
     </a>
 
     <!-- 3. RSVP -->
-    <a class="card" href="games/rsvp/index.html" tabindex="0">
+    <a class="card" href="rsvp/index.html" tabindex="0">
       <div class="card-stripe stripe-teal"></div>
       <div class="card-icon">🍽️</div>
       <div class="card-body">
