@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RSVP Dinner Game</title>
-  <script src="ruffle/ruffle.js"></script>
+  <title>Jelly Battle</title>
+  <script src="../rsvp/ruffle/ruffle.js"></script>
   <style>
     body { margin: 0; background: #000; display: flex;
            justify-content: center; align-items: center;
@@ -18,11 +18,10 @@
     window.addEventListener("load", function() {
       var ruffle = window.RufflePlayer.newest();
       var player = ruffle.createPlayer();
-      var container = document.getElementById("player");
-      container.appendChild(player);
+      document.getElementById("player").appendChild(player);
       player.style.width = "100%";
       player.style.height = "100%";
-      player.load("rsvp.swf");
+      player.load("shell2.swf");
     });
   </script>
 </body>
