@@ -1,5 +1,0 @@
-# Only ./{src,__test__,tools}/**/*.{ts,tsx}
-*.css.d.ts
-*.scss.d.ts
-*.sass.d.ts
-others
