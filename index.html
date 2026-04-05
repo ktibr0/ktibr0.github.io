@@ -1,1224 +1,293 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Криптограмма</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:        #f5f0e8;
-    --paper:     #fdf8f0;
-    --ink:       #2c1a0e;
-    --ink-light: #6b4c30;
-    --accent:    #8b3a1a;
-    --gold:      #c8922a;
-    --green:     #3a7d44;
-    --red:       #b03030;
-    --card-back: #d4c4a8;
-    --card-face: #fdf8f0;
-    --shadow:    rgba(44,26,14,0.18);
-    --radius:    10px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Игротека</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #1a1a2e;
+      --surface:   #16213e;
+      --card:      #0f3460;
+      --accent:    #f5a623;
+      --accent2:   #e94560;
+      --text:      #eaeaea;
+      --muted:     #8899aa;
+      --radius:    20px;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: var(--bg);
-    background-image:
-      radial-gradient(ellipse at 20% 20%, rgba(200,146,42,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, rgba(139,58,26,0.06) 0%, transparent 60%);
-    font-family: 'Lora', Georgia, serif;
-    color: var(--ink);
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    user-select: none;
-  }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
 
-  /* ── HEADER ── */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px 10px;
-    border-bottom: 1px solid rgba(44,26,14,0.12);
-    background: var(--paper);
-    box-shadow: 0 2px 12px var(--shadow);
-    flex-shrink: 0;
-  }
+    /* ── HEADER ─────────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      position: relative;
+    }
+    header::after {
+      content: '';
+      display: block;
+      width: 80px; height: 3px;
+      background: var(--accent);
+      margin: 20px auto 0;
+      border-radius: 2px;
+    }
+    .logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.4rem, 8vw, 4rem);
+      color: var(--accent);
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    .logo span {
+      color: var(--accent2);
+    }
+    .subtitle {
+      margin-top: 10px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: var(--muted);
+      font-weight: 600;
+    }
 
-  .title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.5rem;
-    font-style: italic;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-  }
+    /* ── GRID ────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
 
-  .lives {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+    /* ── CARD ────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 2px solid transparent;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      /* staggered fade-in */
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.22s; }
+    .card:nth-child(3) { animation-delay: 0.34s; }
+    .card:nth-child(4) { animation-delay: 0.46s; }
 
-  .heart {
-    width: 28px;
-    height: 28px;
-    transition: transform 0.3s, opacity 0.3s;
-  }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-  .heart svg { width: 100%; height: 100%; }
-  .heart.lost { opacity: 0.22; transform: scale(0.85); }
+    .card:hover, .card:focus-visible {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 40px rgba(245,166,35,0.2);
+      outline: none;
+    }
+    .card:active {
+      transform: translateY(-1px);
+    }
 
-  /* ── PUZZLE AREA ── */
-  #puzzle-wrap {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 16px 16px 8px;
-    -webkit-overflow-scrolling: touch;
-  }
+    /* colour stripe top */
+    .card-stripe {
+      height: 6px;
+      width: 100%;
+    }
 
-  #puzzle {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 4px;
-    justify-content: center;
-    max-width: 780px;
-    margin: 0 auto;
-  }
+    /* emoji / icon area */
+    .card-icon {
+      font-size: 4rem;
+      text-align: center;
+      padding: 28px 24px 16px;
+      line-height: 1;
+    }
 
-  /* space between words */
-  .word-group {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 3px;
-    margin: 4px 10px;
-  }
+    .card-body {
+      padding: 0 24px 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      color: var(--text);
+    }
+    .card-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+    }
 
-  /* punctuation */
-  .punct {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding-bottom: 6px;
-    font-size: 1.5rem;
-    color: var(--ink);
-    line-height: 1;
-    min-width: 10px;
-  }
+    .card-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
 
-  /* ── CELL ── */
-  .cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-  }
+    .card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 24px 24px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: #1a1a2e;
+      background: var(--accent);
+      transition: background 0.15s;
+    }
+    .card:hover .card-btn {
+      background: #ffbb44;
+    }
+    .card-btn svg {
+      width: 18px; height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
 
-  .cell.open { cursor: default; }
+    /* colour variants */
+    .stripe-gold  { background: linear-gradient(90deg, #f5a623, #ffdd57); }
+    .stripe-red   { background: linear-gradient(90deg, #e94560, #ff6b6b); }
+    .stripe-teal  { background: linear-gradient(90deg, #00b4d8, #48cae4); }
+    .btn-red   { background: var(--accent2); }
+    .card:hover .btn-red  { background: #ff6b6b; }
+    .btn-teal  { background: #00b4d8; }
+    .card:hover .btn-teal { background: #48cae4; }
 
-  .cell-num {
-    font-family: 'Lora', serif;
-    font-size: 0.72rem;
-    color: var(--ink-light);
-    line-height: 1;
-    min-height: 13px;
-    transition: opacity 0.4s;
-  }
+    /* ── COMING SOON card ─────────────────────────── */
+    .card-soon {
+      border: 2px dashed rgba(255,255,255,0.1);
+      background: transparent;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+      padding: 32px;
+      gap: 12px;
+    }
+    .card-soon:hover {
+      border-color: rgba(245,166,35,0.4);
+      box-shadow: none;
+    }
+    .soon-icon { font-size: 2.5rem; }
+    .soon-text {
+      font-size: 1.1rem;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 600;
+    }
 
-  .cell-num.hidden { opacity: 0; }
+    /* ── FOOTER ──────────────────────────────────── */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
 
-  /* 3-D flip card */
-  .card-wrap {
-    width: 36px;
-    height: 46px;
-    perspective: 500px;
-    position: relative;
-  }
-
-  .card {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(.4,0,.2,1);
-    border-radius: var(--radius);
-  }
-
-  .card.flipped { transform: rotateY(180deg); }
-
-  .card-front, .card-back {
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* FRONT = закрытая заслонка */
-  .card-front {
-    background: var(--card-back);
-    background-image: repeating-linear-gradient(
-      135deg,
-      transparent,
-      transparent 6px,
-      rgba(255,255,255,0.18) 6px,
-      rgba(255,255,255,0.18) 7px
-    );
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 3px 8px var(--shadow);
-    border: 1.5px solid rgba(44,26,14,0.15);
-  }
-
-  /* BACK = открытая буква */
-  .card-back {
-    background: var(--card-face);
-    transform: rotateY(180deg);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px var(--shadow);
-    border: 1.5px solid rgba(139,58,26,0.25);
-  }
-
-  .card-back .letter {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  /* selected cell highlight */
-  .cell.selected .card-front {
-    outline: 2.5px solid var(--gold);
-    outline-offset: 1px;
-    box-shadow: 0 0 0 4px rgba(200,146,42,0.22), 0 3px 8px var(--shadow);
-  }
-
-  /* error flash */
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    20%      { transform: translateX(-5px) rotateY(0); }
-    40%      { transform: translateX(5px)  rotateY(0); }
-    60%      { transform: translateX(-4px) rotateY(0); }
-    80%      { transform: translateX(4px)  rotateY(0); }
-  }
-  .cell.error .card-wrap { animation: shake 0.35s ease; }
-  .cell.error .card-front { background: #e8c0b0 !important; }
-
-  /* ── HINT ROW ── */
-  #hint-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 16px 0;
-    max-width: 780px;
-    margin: 0 auto;
-    width: 100%;
-    flex-shrink: 0;
-  }
-
-  .hint-btn {
-    font-family: 'Lora', serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 8px 20px;
-    border-radius: 50px;
-    border: 2px solid var(--gold);
-    background: transparent;
-    color: var(--gold);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    transition: background 0.18s, color 0.18s, opacity 0.2s;
-  }
-  .hint-btn:active { background: rgba(200,146,42,0.12); }
-  .hint-btn.disabled { opacity: 0.32; cursor: default; pointer-events: none; }
-
-  .hint-count {
-    font-size: 0.88rem;
-    color: var(--ink-light);
-    font-family: 'Lora', serif;
-  }
-
-  /* ── AUTHOR STRIP ── */
-  #author-strip {
-    text-align: center;
-    padding: 6px 16px 4px;
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 0.95rem;
-    color: var(--ink-light);
-    letter-spacing: 0.02em;
-    flex-shrink: 0;
-  }
-  #author-strip span {
-    border-bottom: 1px dashed rgba(107,76,48,0.35);
-    padding-bottom: 1px;
-  }
-
-  /* ── KEYBOARD ── */
-  #keyboard {
-    background: var(--paper);
-    border-top: 1px solid rgba(44,26,14,0.12);
-    padding: 8px 6px 10px;
-    box-shadow: 0 -4px 20px var(--shadow);
-    flex-shrink: 0;
-  }
-
-  .kb-row {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-bottom: 6px;
-  }
-
-  .kb-key {
-    font-family: 'Lora', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    width: 40px;
-    height: 46px;
-    border-radius: 8px;
-    border: 1.5px solid rgba(44,26,14,0.18);
-    background: #ede5d4;
-    color: var(--ink);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.18s, color 0.18s, transform 0.1s, box-shadow 0.1s;
-    box-shadow: 0 2px 0 rgba(44,26,14,0.2), 0 1px 3px var(--shadow);
-    position: relative;
-    top: 0;
-  }
-
-  @media (max-width: 480px) {
-    .kb-key { width: 30px; height: 40px; font-size: 0.88rem; }
-    .kb-row  { gap: 3px; margin-bottom: 4px; }
-    #keyboard { padding: 6px 4px 8px; }
-  }
-
-  /* ── LEVEL SCREEN ── */
-  #level-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    background-image:
-      radial-gradient(ellipse at 30% 30%, rgba(200,146,42,0.1) 0%, transparent 60%),
-      radial-gradient(ellipse at 70% 70%, rgba(139,58,26,0.08) 0%, transparent 60%);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  #level-screen.hidden { display: none; }
-
-  .level-box {
-    background: var(--paper);
-    border-radius: 24px;
-    padding: 40px 32px 36px;
-    max-width: 380px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 24px 64px rgba(44,26,14,0.25);
-  }
-
-  .level-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-style: italic;
-    color: var(--accent);
-    margin-bottom: 6px;
-  }
-
-  .level-subtitle {
-    font-size: 0.9rem;
-    color: var(--ink-light);
-    margin-bottom: 30px;
-    line-height: 1.5;
-  }
-
-  .level-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .level-card {
-    border: 2px solid transparent;
-    border-radius: 14px;
-    padding: 14px 20px;
-    cursor: pointer;
-    text-align: left;
-    transition: border-color 0.18s, background 0.18s, transform 0.12s;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--bg);
-  }
-  .level-card:active { transform: scale(0.97); }
-
-  .level-card.easy   { border-color: #3a7d44; }
-  .level-card.medium { border-color: var(--gold); }
-  .level-card.hard   { border-color: var(--accent); }
-
-  .level-card:hover.easy   { background: rgba(58,125,68,0.08); }
-  .level-card:hover.medium { background: rgba(200,146,42,0.08); }
-  .level-card:hover.hard   { background: rgba(139,58,26,0.08); }
-
-  .level-icon { font-size: 1.8rem; line-height: 1; }
-
-  .level-info { flex: 1; }
-  .level-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
-  .level-desc {
-    font-size: 0.8rem;
-    color: var(--ink-light);
-    line-height: 1.4;
-  }
-
-  .kb-key:active {
-    transform: translateY(2px);
-    box-shadow: 0 0 0 rgba(44,26,14,0.2);
-    top: 2px;
-  }
-
-  .kb-key.guessed {
-    background: #c8e6cc;
-    color: var(--green);
-    border-color: rgba(58,125,68,0.4);
-    cursor: default;
-  }
-
-  .kb-key.inactive {
-    opacity: 0.38;
-    cursor: default;
-  }
-
-  /* ── OVERLAYS ── */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(44,26,14,0.65);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-  .overlay.show { display: flex; }
-
-  .overlay-box {
-    background: var(--paper);
-    border-radius: 20px;
-    padding: 36px 32px;
-    max-width: 360px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 24px 64px rgba(44,26,14,0.4);
-    animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1);
-  }
-
-  @keyframes popIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-  }
-
-  .overlay-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-style: italic;
-    color: var(--accent);
-    margin-bottom: 14px;
-  }
-
-  .overlay-quote {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--ink);
-    line-height: 1.6;
-    margin-bottom: 10px;
-  }
-
-  .overlay-author {
-    font-size: 0.9rem;
-    color: var(--ink-light);
-    margin-bottom: 28px;
-  }
-
-  .btn {
-    font-family: 'Lora', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    padding: 14px 32px;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    background: var(--accent);
-    color: #fdf8f0;
-    box-shadow: 0 4px 14px rgba(139,58,26,0.35);
-    transition: background 0.18s, transform 0.1s;
-  }
-  .btn:active { transform: scale(0.96); }
-  .btn.secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 2px solid var(--accent);
-    box-shadow: none;
-    margin-top: 10px;
-  }
-
-  /* stars */
-  .stars {
-    font-size: 2.4rem;
-    margin-bottom: 8px;
-    letter-spacing: 4px;
-  }
-
-#new-game-btn {
-  position: static;
-  bottom: 20px;
-  right: 16px;
-  z-index: 50;
-  font-family: 'Lora', serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 50px;
-  border: 1.5px solid rgba(44,26,14,0.25);
-  background: var(--paper);
-  color: var(--ink-light);
-  cursor: pointer;
-  box-shadow: 0 2px 10px var(--shadow);
-  transition: background 0.18s, transform 0.1s;
-  opacity: 0.75;
-}
-#new-game-btn:active {
-  transform: scale(0.95);
-  opacity: 1;
-}
-
-</style>
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 400px) {
+      .grid { padding: 0 14px; gap: 16px; }
+      .card-icon { font-size: 3rem; padding: 22px 18px 12px; }
+      .card-title { font-size: 1.4rem; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- LEVEL SCREEN -->
-<div id="level-screen">
-  <div class="level-box">
-    <div class="level-title">Криптограмма</div>
-    <div class="level-subtitle">Расшифруй мудрую цитату.<br>Выбери уровень сложности:</div>
-    <div class="level-cards">
-      <div class="level-card easy" onclick="startGame('easy')">
-        <div class="level-icon">🌿</div>
-        <div class="level-info">
-          <div class="level-name">Легко</div>
-          <div class="level-desc">Много подсказок, частые буквы открыты — можно насладиться цитатой</div>
-        </div>
+  <header>
+    <div class="logo">Игро<span>тека</span></div>
+    <p class="subtitle">Семейные игры прямо в браузере</p>
+  </header>
+
+  <main class="grid">
+
+    <!-- 1. Криптограф -->
+    <a class="card" href="games/cryptographer/index.html" tabindex="0">
+      <div class="card-stripe stripe-gold"></div>
+      <div class="card-icon">🔐</div>
+      <div class="card-body">
+        <div class="card-title">Криптограф</div>
+        <div class="card-desc">Разгадай зашифрованное стихотворение, заменяя буквы. Тренировка логики и внимания.</div>
+        <span class="card-tag">Слова · Логика</span>
       </div>
-      <div class="level-card medium" onclick="startGame('medium')">
-        <div class="level-icon">🕯️</div>
-        <div class="level-info">
-          <div class="level-name">Средне</div>
-          <div class="level-desc">Несколько подсказок, редкие буквы скрыты — нужно подумать</div>
-        </div>
+      <div class="card-btn">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Играть
       </div>
-      <div class="level-card hard" onclick="startGame('hard')">
-        <div class="level-icon">🔐</div>
-        <div class="level-info">
-          <div class="level-name">Сложно</div>
-          <div class="level-desc">Почти ничего не открыто — только для настоящих знатоков</div>
-        </div>
+    </a>
+
+    <!-- 2. ArcoMage HD -->
+    <a class="card" href="https://arcomage.github.io/arcomage-hd/" target="_blank" rel="noopener" tabindex="0">
+      <div class="card-stripe stripe-red"></div>
+      <div class="card-icon">🏰</div>
+      <div class="card-body">
+        <div class="card-title">ArcoMage HD</div>
+        <div class="card-desc">Карточная дуэль магов — строй башню, управляй ресурсами, уничтожь крепость соперника.</div>
+        <span class="card-tag">Карты · Стратегия</span>
       </div>
+      <div class="card-btn btn-red">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Играть
+      </div>
+    </a>
+
+    <!-- 3. RSVP -->
+    <a class="card" href="games/rsvp/index.html" tabindex="0">
+      <div class="card-stripe stripe-teal"></div>
+      <div class="card-icon">🍽️</div>
+      <div class="card-body">
+        <div class="card-title">RSVP Dinner</div>
+        <div class="card-desc">Организуй праздничный ужин — рассади гостей, угоди всем и не забудь ни о чём!</div>
+        <span class="card-tag">Казуальная · Классика</span>
+      </div>
+      <div class="card-btn btn-teal">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Играть
+      </div>
+    </a>
+
+    <!-- Placeholder -->
+    <div class="card card-soon" aria-hidden="true">
+      <div class="soon-icon">＋</div>
+      <div class="soon-text">Скоро ещё<br>одна игра</div>
     </div>
-  </div>
-</div>
 
-<!-- HEADER -->
-<header>
-  <div class="title">Криптограмма</div>
-  <div class="lives" id="lives"></div>
-</header>
+  </main>
 
-<!-- HINT ROW + AUTHOR -->
-<div id="puzzle-wrap">
-  <div id="puzzle"></div>
-</div>
-<div id="hint-row">
-  <button class="hint-btn" id="hint-btn" onclick="useHint()">
-    💡 Подсказка
-  </button>
-  <span class="hint-count" id="hint-count">Подсказок: 3</span>
-</div>
-<button id="new-game-btn" onclick="newGame()">🔄 Новая</button>
+  <footer>
+    <p>Сделано с ❤️ для семьи · <a href="https://github.com/ktibr0/ktibr0.github.io" style="color:var(--muted)">GitHub</a></p>
+  </footer>
 
-<div id="author-strip">Автор: <span id="author-label"></span></div>
-
-<!-- KEYBOARD -->
-<div id="keyboard">
-  <div class="kb-row" id="kb-row-1"></div>
-  <div class="kb-row" id="kb-row-2"></div>
-  <div class="kb-row" id="kb-row-3"></div>
-</div>
-
-<!-- WIN OVERLAY -->
-<div class="overlay" id="win-overlay">
-  <div class="overlay-box">
-    <div class="stars">🌟🌟🌟</div>
-    <div class="overlay-title">Молодец!</div>
-    <div class="overlay-quote" id="win-quote"></div>
-    <div class="overlay-author" id="win-author"></div>
-    <button class="btn" onclick="restartGame()">Играть снова</button>
-  </div>
-</div>
-
-<!-- LOSE OVERLAY -->
-<div class="overlay" id="lose-overlay">
-  <div class="overlay-box">
-    <div class="stars">💔</div>
-    <div class="overlay-title">Ошибок слишком много</div>
-    <div class="overlay-quote" id="lose-quote"></div>
-    <div class="overlay-author" id="lose-author"></div>
-    <button class="btn" onclick="restartGame()">Попробовать снова</button>
-  </div>
-</div>
-
-<script>
-// ─────────────────────────────────────────────
-//  ЦИТАТЫ
-// ─────────────────────────────────────────────
-const QUOTES = [
-  { text: "Жизнь — это то, что происходит с тобой, пока ты строишь другие планы", author: "Джон Леннон" },
-  { text: "Улыбайся — это раздражает тех, кто желает тебе зла", author: "Народная мудрость" },
-  { text: "Будь собой — все остальные роли уже заняты", author: "Оскар Уайльд" },
-  { text: "Счастье любит тишину", author: "Русская пословица" },
-  { text: "Не тот счастлив, у кого всё есть, а тот, кому всего хватает", author: "Народная мудрость" },
-  { text: "Жизнь прожить — не поле перейти", author: "Русская пословица" },
-{ text: "Век живи — век учись", author: "Русская пословица" },
-{ text: "Всё проходит, пройдёт и это", author: "Царь Соломон" },
-{ text: "Познай самого себя", author: "Сократ" },
-{ text: "Я знаю только то, что ничего не знаю", author: "Сократ" },
-{ text: "Мудрость начинается с удивления", author: "Сократ" },
-{ text: "Жизнь коротка, искусство вечно", author: "Гиппократ" },
-{ text: "В здоровом теле здоровый дух", author: "Ювенал" },
-{ text: "Время лечит все раны", author: "Народная мудрость" },
-{ text: "Истина рождается в споре", author: "Сократ" },
-{ text: "Не всё золото, что блестит", author: "Народная мудрость" },
-{ text: "Тише едешь — дальше будешь", author: "Русская пословица" },
-{ text: "Слово — серебро, молчание — золото", author: "Народная мудрость" },
-{ text: "Умный гору обойдёт", author: "Русская пословица" },
-{ text: "Делай что должен, и будь что будет", author: "Марк Аврелий" },
-{ text: "Всё в наших руках, поэтому нельзя их опускать", author: "Коко Шанель" },
-{ text: "Терпение и труд всё перетрут", author: "Русская пословица" },
-{ text: "На всякого мудреца довольно простоты", author: "Русская пословица" },
-{ text: "Два сапога — пара", author: "Русская пословица" },
-{ text: "Семь раз отмерь — один раз отрежь", author: "Русская пословица" },
-{ text: "Счастье — это когда тебя понимают", author: "Конфуций" },
-{ text: "Радость — это здоровье души", author: "Аристотель" },
-{ text: "Улыбка ничего не стоит, но много даёт", author: "Народная мудрость" },
-{ text: "Счастливые часов не наблюдают", author: "Александр Грибоедов" },
-{ text: "Лучшее — враг хорошего", author: "Вольтер" },
-{ text: "Нет пути к счастью — счастье и есть путь", author: "Будда" },
-{ text: "Хочешь быть счастливым — будь им", author: "Козьма Прутков" },
-{ text: "Наслаждайся жизнью — она не повторяется", author: "Народная мудрость" },
-{ text: "Маленькие радости складываются в большое счастье", author: "Народная мудрость" },
-{ text: "Смех — лучшее лекарство", author: "Народная мудрость" },
-{ text: "Скажи мне, кто твой друг, и я скажу, кто ты", author: "Народная мудрость" },
-{ text: "Старый друг лучше новых двух", author: "Русская пословица" },
-{ text: "Друг познаётся в беде", author: "Русская пословица" },
-{ text: "Любовь — это желание жить другим", author: "Лев Толстой" },
-{ text: "Любить — значит видеть чудо, невидимое другим", author: "Франсуа Мориак" },
-{ text: "Где любовь, там и Бог", author: "Лев Толстой" },
-{ text: "Не имей сто рублей, а имей сто друзей", author: "Русская пословица" },
-{ text: "Один в поле не воин", author: "Русская пословица" },
-{ text: "Дружба — это одна душа в двух телах", author: "Аристотель" },
-{ text: "Любовь движет солнце и светила", author: "Данте Алигьери" },
-{ text: "Сердце матери — бездонная пропасть", author: "Народная мудрость" },
-{ text: "Нет на свете дороже слова, чем слово мама", author: "Народная мудрость" },
-{ text: "Без труда не выловишь и рыбку из пруда", author: "Русская пословица" },
-{ text: "Дорогу осилит идущий", author: "Русская пословица" },
-{ text: "Кто не рискует, тот не пьёт шампанского", author: "Русская пословица" },
-{ text: "Глаза боятся — руки делают", author: "Русская пословица" },
-{ text: "Под лежачий камень вода не течёт", author: "Русская пословица" },
-{ text: "Начало — половина дела", author: "Аристотель" },
-{ text: "Великие дела вершатся маленькими шагами", author: "Народная мудрость" },
-{ text: "Мечтай смело, но работай ещё смелее", author: "Народная мудрость" },
-{ text: "Успех — это результат правильно выбранных привычек", author: "Народная мудрость" },
-{ text: "Лучше сделать и пожалеть, чем не сделать и пожалеть", author: "Народная мудрость" },
-{ text: "Трудолюбие — мать удачи", author: "Бенджамин Франклин" },
-{ text: "Падая семь раз — поднимайся восемь", author: "Японская пословица" },
-{ text: "Не бойся медлить, бойся остановиться", author: "Китайская пословица" },
-{ text: "Тот, кто хочет — ищет возможности, кто не хочет — ищет причины", author: "Народная мудрость" },
-{ text: "Невозможное становится возможным для того, кто действует", author: "Народная мудрость" },
-{ text: "Книга — лучший друг человека", author: "Народная мудрость" },
-{ text: "Ученье свет, а неученье тьма", author: "Русская пословица" },
-{ text: "Знание — сила", author: "Фрэнсис Бэкон" },
-{ text: "Нет ничего практичнее хорошей теории", author: "Людвиг Больцман" },
-{ text: "Образование — это то, что остаётся после того, как забываешь всё выученное", author: "Альберт Эйнштейн" },
-{ text: "Воображение важнее знания", author: "Альберт Эйнштейн" },
-{ text: "Если ты не читаешь книг, то у тебя нет преимуществ перед тем, кто не умеет читать", author: "Марк Твен" },
-{ text: "Мозг — не сосуд, который нужно наполнить, а факел, который нужно зажечь", author: "Плутарх" },
-{ text: "Чем больше я узнаю людей, тем больше мне нравятся собаки", author: "Артур Шопенгауэр" },
-{ text: "Читать — значит думать чужой головой", author: "Артур Шопенгауэр" },
-{ text: "Умение слушать — редкий талант", author: "Народная мудрость" },
-{ text: "Слушай больше, говори меньше", author: "Народная мудрость" },
-{ text: "Всё течёт, всё меняется", author: "Гераклит" },
-{ text: "Нельзя войти в одну реку дважды", author: "Гераклит" },
-{ text: "Это тоже пройдёт", author: "Народная мудрость" },
-{ text: "Не откладывай на завтра то, что можно сделать сегодня", author: "Бенджамин Франклин" },
-{ text: "Лучше поздно, чем никогда", author: "Народная мудрость" },
-{ text: "Всему своё время", author: "Екклесиаст" },
-{ text: "Время — деньги", author: "Бенджамин Франклин" },
-{ text: "Прошлое нельзя изменить, но будущее — в твоих руках", author: "Народная мудрость" },
-{ text: "Каждый день — это маленькая жизнь", author: "Артур Шопенгауэр" },
-{ text: "Живи настоящим — прошлое уже ушло, будущее ещё не пришло", author: "Будда" },
-{ text: "Дорога длиной в тысячу ли начинается с первого шага", author: "Лао-Цзы" },
-{ text: "Завтра будет новый день", author: "Маргарет Митчелл" },
-{ text: "Будь собой — все остальные роли уже заняты", author: "Оскар Уайльд" },
-{ text: "Честь дороже жизни", author: "Фридрих Шиллер" },
-{ text: "Жизнь слишком коротка, чтобы быть маленьким", author: "Бенджамин Дизраэли" },
-{ text: "Только слабые жестоки, доброта свойственна сильным", author: "Лев Толстой" },
-{ text: "Лучший способ подбодрить себя — это подбодрить кого-нибудь другого", author: "Марк Твен" },
-{ text: "Доброта — это язык, который глухой может услышать, а слепой увидеть", author: "Марк Твен" },
-{ text: "Относись к людям так, как хочешь, чтобы относились к тебе", author: "Народная мудрость" },
-{ text: "Мудрец не показывает своих знаний, глупец — своей глупости", author: "Народная мудрость" },
-{ text: "Характер — это судьба", author: "Гераклит" },
-{ text: "Привычка — вторая натура", author: "Цицерон" },
-{ text: "Человек есть то, что он ест", author: "Людвиг Фейербах" },
-{ text: "Не бойся врагов — они могут только убить тебя, не бойся друзей — они могут только предать тебя, бойся равнодушных", author: "Бруно Ясенский" },
-{ text: "Красота спасёт мир", author: "Фёдор Достоевский" },
-{ text: "Всё гениальное просто", author: "Народная мудрость" },
-{ text: "Природа не терпит пустоты", author: "Аристотель" },
-{ text: "Лес рубят — щепки летят", author: "Русская пословица" },
-{ text: "Утро вечера мудренее", author: "Русская пословица" },
-{ text: "После дождя всегда выходит солнце", author: "Народная мудрость" },
-{ text: "Где тонко, там и рвётся", author: "Русская пословица" },
-{ text: "Яблоко от яблони недалеко падает", author: "Русская пословица" },
-{ text: "Мал золотник, да дорог", author: "Русская пословица" },
-{ text: "Человек — это звучит гордо", author: "Максим Горький" },
-{ text: "Береги честь смолоду", author: "Александр Пушкин" },
-{ text: "Любви все возрасты покорны", author: "Александр Пушкин" },
-{ text: "Я помню чудное мгновенье", author: "Александр Пушкин" },
-{ text: "Мы все учились понемногу, чему-нибудь и как-нибудь", author: "Александр Пушкин" },
-{ text: "Счастья нет, а есть покой и воля", author: "Александр Пушкин" },
-{ text: "Если жизнь тебя обманет, не печалься, не сердись", author: "Александр Пушкин" },
-{ text: "Не спрашивай, что твоя страна может сделать для тебя", author: "Александр Пушкин" },
-{ text: "Нам не дано предугадать, как наше слово отзовётся", author: "Фёдор Тютчев" },
-{ text: "Умом Россию не понять", author: "Фёдор Тютчев" },
-{ text: "В человеке должно быть всё прекрасно", author: "Антон Чехов" },
-{ text: "Краткость — сестра таланта", author: "Антон Чехов" },
-{ text: "Если хочешь стать оптимистом и понять жизнь, то перестань верить тому, что говорят и пишут", author: "Антон Чехов" },
-{ text: "Равнодушие — это паралич души", author: "Антон Чехов" },
-{ text: "Всё приходит к тому, кто умеет ждать", author: "Лев Толстой" },
-{ text: "Все счастливые семьи похожи друг на друга", author: "Лев Толстой" },
-{ text: "Сила не в силе, а в любви", author: "Лев Толстой" },
-{ text: "Гром победы, раздавайся", author: "Гавриил Державин" },
-{ text: "Есть упоение в бою", author: "Александр Пушкин" },
-{ text: "Мёртвые сраму не имут", author: "Князь Святослав" },
-{ text: "Быть или не быть — вот в чём вопрос", author: "Уильям Шекспир" },
-{ text: "Весь мир — театр, а люди в нём — актёры", author: "Уильям Шекспир" },
-{ text: "Что в имени тебе моём", author: "Уильям Шекспир" },
-{ text: "Я мыслю, следовательно, я существую", author: "Рене Декарт" },
-{ text: "Бог умер", author: "Фридрих Ницше" },
-{ text: "То, что не убивает нас, делает нас сильнее", author: "Фридрих Ницше" },
-{ text: "Когда смотришь в бездну, бездна смотрит на тебя", author: "Фридрих Ницше" },
-{ text: "Человек обречён на свободу", author: "Жан-Поль Сартр" },
-{ text: "Ад — это другие люди", author: "Жан-Поль Сартр" },
-{ text: "Всё приходит вовремя для того, кто умеет ждать", author: "Оноре де Бальзак" },
-{ text: "За каждым великим состоянием стоит преступление", author: "Оноре де Бальзак" },
-{ text: "Лучший способ осуществить мечту — проснуться", author: "Поль Валери" },
-{ text: "Единственный способ делать великую работу — любить то, что делаешь", author: "Стив Джобс" },
-{ text: "Оставайтесь голодными, оставайтесь безрассудными", author: "Стив Джобс" },
-{ text: "Логика приведёт вас из точки А в точку Б, а воображение — куда угодно", author: "Альберт Эйнштейн" },
-{ text: "Безумие — делать одно и то же и ждать других результатов", author: "Альберт Эйнштейн" },
-{ text: "Жизнь — это то, что случается, пока вы строите другие планы", author: "Джон Леннон" },
-{ text: "Представь, что все люди живут в мире", author: "Джон Леннон" },
-{ text: "Репортируй о том, что видишь, а не то, что тебе говорят", author: "Марк Твен" },
-{ text: "Слухи о моей смерти были сильно преувеличены", author: "Марк Твен" },
-{ text: "Лучше зажечь одну свечу, чем проклинать темноту", author: "Конфуций" },
-{ text: "Не бойся, что не знаешь — бойся, что не учишься", author: "Конфуций" },
-{ text: "Куда бы ты ни пошёл, иди с душой", author: "Конфуций" },
-{ text: "Выберите себе работу по душе, и вам не придётся работать ни одного дня", author: "Конфуций" },
-{ text: "Жизнь — это страдание, причина страдания — желание", author: "Будда" },
-{ text: "Три вещи не возвращаются: время, слово, возможность", author: "Восточная мудрость" },
-{ text: "Торопись медленно", author: "Восточная мудрость" },
-{ text: "Мудрец всегда найдёт то, что ищет дурак", author: "Восточная мудрость" },
-{ text: "Один враг — это слишком много, а тысяча друзей — слишком мало", author: "Восточная мудрость" },
-{ text: "Знающий не говорит, говорящий не знает", author: "Лао-Цзы" },
-{ text: "Победи себя — и ты победишь тысячи", author: "Будда" },
-{ text: "Посеешь поступок — пожнёшь привычку", author: "Восточная мудрость" },
-{ text: "Жить хорошо, а хорошо жить ещё лучше", author: "Народная мудрость" },
-{ text: "Хочешь рассмешить Бога — расскажи ему о своих планах", author: "Вуди Аллен" },
-{ text: "Оптимист — это человек, который думает, что всё будет хорошо", author: "Народная мудрость" },
-{ text: "Деньги не пахнут", author: "Веспасиан" },
-{ text: "После нас хоть потоп", author: "Маркиза де Помпадур" },
-{ text: "Никогда не говори никогда", author: "Народная мудрость" },
-{ text: "Хочешь мира — готовься к войне", author: "Вегеций" },
-{ text: "Не так страшен чёрт, как его малюют", author: "Русская пословица" },
-{ text: "Гора родила мышь", author: "Народная мудрость" },
-{ text: "Молчание — знак согласия", author: "Народная мудрость" },
-{ text: "Cogito ergo sum", author: "Рене Декарт" },
-{ text: "Красота — страшная сила", author: "Народная мудрость" },
-{ text: "Истина где-то рядом", author: "Народная мудрость" },
-{ text: "Всё или ничего", author: "Народная мудрость" },
-{ text: "Главное — не победа, а участие", author: "Пьер де Кубертен" },
-{ text: "Лучше меньше, да лучше", author: "Владимир Ленин" },
-{ text: "Искусство требует жертв", author: "Народная мудрость" },
-{ text: "В начале было слово", author: "Евангелие от Иоанна" },
-{ text: "Рим не сразу строился", author: "Народная мудрость" },
-{ text: "Клин клином вышибают", author: "Русская пословица" },
-{ text: "Бытие определяет сознание", author: "Карл Маркс" },
-{ text: "Свято место пусто не бывает", author: "Русская пословица" },
-{ text: "Не хлебом единым жив человек", author: "Библия" },
-{ text: "Мир ловил меня, но не поймал", author: "Григорий Сковорода" },
-{ text: "Нет пророка в своём отечестве", author: "Библия" },
-{ text: "Всё познаётся в сравнении", author: "Народная мудрость" },
-{ text: "Из двух зол выбирай меньшее", author: "Народная мудрость" },
-{ text: "На миру и смерть красна", author: "Русская пословица" },
-{ text: "Бедность не порок", author: "Русская пословица" },
-{ text: "Повторение — мать учения", author: "Народная мудрость" },
-];
-
-// ─────────────────────────────────────────────
-//  КЛАВИАТУРА
-// ─────────────────────────────────────────────
-const KB_ROWS = [
-  ['Й','Ц','У','К','Е','Н','Г','Ш','Щ','З','Х'],
-  ['Ф','Ы','В','А','П','Р','О','Л','Д','Ж','Э'],
-  ['Я','Ч','С','М','И','Т','Ь','Ъ','Б','Ю'],
-];
-
-// ─────────────────────────────────────────────
-//  СОСТОЯНИЕ
-// ─────────────────────────────────────────────
-let state = {};
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function pickRandom(arr, n) {
-  return shuffle(arr).slice(0, n);
-}
-
-function initGame(difficulty) {
-  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-  const text = q.text.toUpperCase();
-  const author = q.author;
-
-  // Токены
-  const tokens = [];
-  let id = 0;
-  for (const ch of text) {
-    if (/[А-ЯЁ]/.test(ch))  tokens.push({ type: 'letter', char: ch, id: id++, revealed: false });
-    else if (ch === ' ')     tokens.push({ type: 'space' });
-    else                     tokens.push({ type: 'punct', char: ch });
-  }
-
-  // Уникальные буквы и шифр
-  const letterTokens = tokens.filter(t => t.type === 'letter');
-  const letters = [...new Set(letterTokens.map(t => t.char))];
-  const nums = shuffle([...Array(letters.length)].map((_,i) => i + 1));
-  const letterToNum = {};
-  letters.forEach((l, i) => { letterToNum[l] = nums[i]; });
-  letterTokens.forEach(t => { t.num = letterToNum[t.char]; });
-
-  // ── УМНЫЙ АЛГОРИТМ ОТКРЫТИЯ БУКВ ──
-  const N = letterTokens.length;   // всего буквенных позиций
-  const U = letters.length;        // уникальных букв
-  const R = U ? (N / U) : 1;       // средняя повторяемость
-
-  // Частоты
-  const freq = {};
-  for (const t of letterTokens) freq[t.char] = (freq[t.char] || 0) + 1;
-  // Сортировка по убыванию частоты
-  const byFreqDesc = [...letters].sort((a,b) => freq[b] - freq[a]);
-
-  // Базовый % открытых уникальных букв по уровню
-  const pct = difficulty === 'easy' ? 0.55
-            : difficulty === 'medium' ? 0.30
-            : 0.15;  // hard
-
-  let revealCount = Math.round(U * pct);
-
-  // Поправка на повторяемость: редкие повторы → тяжелее → +1
-  if (R < 1.6) revealCount += (difficulty === 'hard' ? 0 : 1);
-  if (R > 2.8) revealCount -= (difficulty === 'easy' ? 0 : 1);
-
-  // Поправка на длину: очень короткие цитаты — добавляем чуть больше
-  if (N < 20) revealCount = Math.max(revealCount, difficulty === 'hard' ? 1 : 2);
-
-  // Границы
-  revealCount = Math.max(1, Math.min(revealCount, U));
-
-  // Отбор букв: на лёгком — из самых частых (они дают больше открытых клеток),
-  // на сложном — из середины (частые буквы остаются скрытыми → труднее угадывать)
-  let pool;
-  if (difficulty === 'easy') {
-    // Берём самые частые, это сразу открывает много клеток на поле
-    pool = byFreqDesc;
-  } else if (difficulty === 'medium') {
-    // Исключаем топ-2 самых частых, берём из середины
-    const skip = Math.min(2, Math.floor(U * 0.2));
-    pool = byFreqDesc.slice(skip);
-  } else {
-    // Hard: исключаем топ-40% частых букв — самые частые остаются тайной
-    const skip = Math.floor(U * 0.4);
-    pool = byFreqDesc.slice(skip);
-    if (pool.length === 0) pool = byFreqDesc; // fallback если букв мало
-  }
-
-  const preReveal = shuffle([...pool]).slice(0, revealCount);
-
-  // Для каждой выбранной буквы открываем ОДНО случайное вхождение
-  preReveal.forEach(letter => {
-    const candidates = tokens.filter(t => t.type === 'letter' && t.char === letter);
-    if (candidates.length) {
-      const pick = candidates[Math.floor(Math.random() * candidates.length)];
-      pick.revealed = true;
-    }
-  });
-
-  // Количество подсказок по уровню
-  const hintsLeft = difficulty === 'easy' ? 5
-                  : difficulty === 'medium' ? 3
-                  : 1;
-
-  state = {
-    tokens,
-    letterToNum,
-    lives: 3,
-    maxLives: 3,
-    selectedId: null,
-    quote: q.text,
-    author,
-    done: false,
-    hintsLeft,
-    difficulty,
-  };
-}
-
-// ─────────────────────────────────────────────
-//  РЕНДЕР ПОДСКАЗОК И АВТОРА
-// ─────────────────────────────────────────────
-function renderHints() {
-  const btn = document.getElementById('hint-btn');
-  const cnt = document.getElementById('hint-count');
-  cnt.textContent = `Подсказок: ${state.hintsLeft}`;
-  if (state.hintsLeft <= 0 || state.done) {
-    btn.classList.add('disabled');
-  } else {
-    btn.classList.remove('disabled');
-  }
-}
-
-function renderAuthor() {
-  document.getElementById('author-label').textContent = state.author;
-}
-
-// ─────────────────────────────────────────────
-//  ПОДСКАЗКА
-// ─────────────────────────────────────────────
-function useHint() {
-  if (state.hintsLeft <= 0 || state.done) return;
-
-  // Берём случайную закрытую ячейку
-  const closed = state.tokens.filter(t => t.type === 'letter' && !t.revealed);
-  if (!closed.length) return;
-
-  const pick = closed[Math.floor(Math.random() * closed.length)];
-
-  const hintId  = pick.id;
-  state.hintsLeft--;
-  pick.revealed = true;
-  state.selectedId = null;
-
-  const cellEl2 = document.querySelector(`.cell[data-id="${hintId}"]`);
-  if (cellEl2) {
-    const card = cellEl2.querySelector('.card');
-    if (card) card.classList.add('flipped');
-    setTimeout(() => {
-      autoSelectNext(hintId);
-      renderPuzzle();
-      renderKeyboard();
-      renderHints();
-      checkWin();
-    }, 580);
-  } else {
-    autoSelectNext(hintId);
-    renderPuzzle();
-    renderKeyboard();
-    renderHints();
-    checkWin();
-  }
-}
-
-// ─────────────────────────────────────────────
-//  АВТО-ФОКУС НА СЛЕДУЮЩУЮ ЗАКРЫТУЮ ЯЧЕЙКУ
-// ─────────────────────────────────────────────
-function autoSelectNext(afterId) {
-  const closed = state.tokens.filter(t => t.type === 'letter' && !t.revealed);
-  if (!closed.length) { state.selectedId = null; return; }
-
-  // 1. Первая закрытая вправо после afterId
-  if (afterId !== undefined) {
-    const afterIdx = state.tokens.findIndex(t => t.id === afterId);
-    const next = state.tokens
-      .slice(afterIdx + 1)
-      .find(t => t.type === 'letter' && !t.revealed);
-    if (next) { state.selectedId = next.id; return; }
-  }
-
-  // 2. Fallback — первая закрытая с начала текста
-  state.selectedId = closed[0].id;
-}
-
-// ─────────────────────────────────────────────
-//  РЕНДЕР СЕРДЕЧЕК
-// ─────────────────────────────────────────────
-function renderLives() {
-  const el = document.getElementById('lives');
-  el.innerHTML = '';
-  for (let i = 0; i < state.maxLives; i++) {
-    const div = document.createElement('div');
-    div.className = 'heart' + (i >= state.lives ? ' lost' : '');
-    div.innerHTML = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 27s-13-8.35-13-16A7 7 0 0 1 16 7.93 7 7 0 0 1 29 11c0 7.65-13 16-13 16Z"
-        fill="${i < state.lives ? '#c8402a' : '#c0b09a'}" stroke="none"/>
-    </svg>`;
-    el.appendChild(div);
-  }
-}
-
-// ─────────────────────────────────────────────
-//  РЕНДЕР КЛАВИАТУРЫ
-// ─────────────────────────────────────────────
-function renderKeyboard() {
-  // Какие буквы встречаются в цитате
-  const inQuote = new Set(
-    state.tokens.filter(t => t.type === 'letter').map(t => t.char)
-  );
-  // Какие буквы уже угаданы (хотя бы одна ячейка открыта)
-  const guessed = new Set(
-    state.tokens.filter(t => t.type === 'letter' && t.revealed).map(t => t.char)
-  );
-
-  KB_ROWS.forEach((row, ri) => {
-    const rowEl = document.getElementById(`kb-row-${ri + 1}`);
-    rowEl.innerHTML = '';
-    row.forEach(key => {
-      const btn = document.createElement('button');
-      btn.className = 'kb-key';
-      btn.textContent = key;
-      btn.dataset.key = key;
-      if (guessed.has(key)) {
-        btn.classList.add('guessed');
-      } else if (!inQuote.has(key)) {
-        btn.classList.add('inactive');
-      }
-      btn.addEventListener('click', () => onKeyPress(key));
-      rowEl.appendChild(btn);
-    });
-  });
-}
-
-// ─────────────────────────────────────────────
-//  РЕНДЕР ПОЛЯ
-// ─────────────────────────────────────────────
-function renderPuzzle() {
-  const puzzle = document.getElementById('puzzle');
-  puzzle.innerHTML = '';
-
-  // Группируем в слова (разделитель — space)
-  let wordGroup = document.createElement('div');
-  wordGroup.className = 'word-group';
-
-  state.tokens.forEach(token => {
-    if (token.type === 'space') {
-      if (wordGroup.childNodes.length) puzzle.appendChild(wordGroup);
-      wordGroup = document.createElement('div');
-      wordGroup.className = 'word-group';
-      return;
-    }
-    if (token.type === 'punct') {
-      const p = document.createElement('div');
-      p.className = 'punct';
-      p.textContent = token.char;
-      wordGroup.appendChild(p);
-      return;
-    }
-
-    // Проверяем: все ячейки с этим числом открыты?
-    const numCode = token.num;
-    const allOfCode = state.tokens.filter(t => t.type === 'letter' && t.num === numCode);
-    const allOpen = allOfCode.every(t => t.revealed);
-
-    const cell = document.createElement('div');
-    cell.className = 'cell' + (token.revealed ? ' open' : '');
-    if (!token.revealed && state.selectedId === token.id) cell.classList.add('selected');
-    cell.dataset.id = token.id;
-
-    // Число снизу
-    const num = document.createElement('div');
-    num.className = 'cell-num' + (allOpen ? ' hidden' : '');
-    num.textContent = numCode;
-
-    // Карточка
-    const wrap = document.createElement('div');
-    wrap.className = 'card-wrap';
-    const card = document.createElement('div');
-    card.className = 'card' + (token.revealed ? ' flipped' : '');
-
-    const front = document.createElement('div');
-    front.className = 'card-front';
-
-    const back = document.createElement('div');
-    back.className = 'card-back';
-    const letterSpan = document.createElement('span');
-    letterSpan.className = 'letter';
-    letterSpan.textContent = token.char;
-    back.appendChild(letterSpan);
-
-    card.appendChild(front);
-    card.appendChild(back);
-    wrap.appendChild(card);
-
-    cell.appendChild(wrap);
-    cell.appendChild(num);
-
-    if (!token.revealed) {
-      cell.addEventListener('click', () => onCellClick(token.id));
-    }
-
-    wordGroup.appendChild(cell);
-  });
-
-  if (wordGroup.childNodes.length) puzzle.appendChild(wordGroup);
-}
-
-// ─────────────────────────────────────────────
-//  ЛОГИКА
-// ─────────────────────────────────────────────
-function onCellClick(id) {
-  if (state.done) return;
-  state.selectedId = id;
-  renderPuzzle();
-}
-
-function onKeyPress(key) {
-  if (state.done) return;
-  if (state.selectedId === null) return;
-
-  const token = state.tokens.find(t => t.id === state.selectedId);
-  if (!token || token.revealed) return;
-
-  const cellEl = document.querySelector(`.cell[data-id="${token.id}"]`);
-
-  if (key === token.char) {
-    const revealedId = token.id;
-    token.revealed = true;
-
-    if (cellEl) {
-      const card = cellEl.querySelector('.card');
-      card.classList.add('flipped');
-      setTimeout(() => {
-        autoSelectNext(revealedId);
-        renderPuzzle();
-        renderKeyboard();
-        checkWin();
-      }, 580);
-    } else {
-      autoSelectNext(revealedId);
-      renderPuzzle();
-      renderKeyboard();
-      checkWin();
-    }
-  } else {
-    // НЕПРАВИЛЬНО
-    state.lives--;
-    renderLives();
-
-    if (cellEl) {
-      cellEl.classList.add('error');
-      setTimeout(() => {
-        cellEl.classList.remove('error');
-      }, 400);
-    }
-
-    if (state.lives <= 0) {
-      setTimeout(showLose, 600);
-      state.done = true;
-    }
-  }
-}
-
-function checkWin() {
-  const allRevealed = state.tokens
-    .filter(t => t.type === 'letter')
-    .every(t => t.revealed);
-  if (allRevealed) {
-    state.done = true;
-    setTimeout(showWin, 700);
-  }
-}
-
-function showWin() {
-  document.getElementById('win-quote').textContent = `«${state.quote}»`;
-  document.getElementById('win-author').textContent = `— ${state.author}`;
-  document.getElementById('win-overlay').classList.add('show');
-}
-
-function showLose() {
-  document.getElementById('lose-quote').textContent = `«${state.quote}»`;
-  document.getElementById('lose-author').textContent = `— ${state.author}`;
-  document.getElementById('lose-overlay').classList.add('show');
-}
-
-function startGame(difficulty) {
-  difficulty = difficulty || 'medium';
-  document.getElementById('level-screen').classList.add('hidden');
-  initGame(difficulty);
-  renderLives();
-  renderPuzzle();
-  renderKeyboard();
-  renderHints();
-  renderAuthor();
-  autoSelectNext();
-  renderPuzzle();
-}
-function newGame() {
-  document.getElementById('win-overlay').classList.remove('show');
-  document.getElementById('lose-overlay').classList.remove('show');
-  document.getElementById('level-screen').classList.remove('hidden');
-}
-function restartGame() {
-  document.getElementById('win-overlay').classList.remove('show');
-  document.getElementById('lose-overlay').classList.remove('show');
-  document.getElementById('level-screen').classList.remove('hidden');
-}
-
-// ─────────────────────────────────────────────
-//  СТАРТ — экран выбора уровня виден сразу
-// ─────────────────────────────────────────────
-</script>
 </body>
 </html>
