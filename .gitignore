@@ -48,3 +48,7 @@ yarn-error.log*
 .claude
 # Claude Code local settings
 .claude/settings.local.json
+
+# Local Cryptographer verification artifacts
+_work/
+node_modules/
