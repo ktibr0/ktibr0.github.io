@@ -1,0 +1,18 @@
+/* Integration-only cleanup for the selected solo puzzle and card games. */
+.settings-version-section,
+#settings-ai-pacing-group,
+#settings-random-start-group {
+  display: none !important;
+}
+
+h3.settings-subheading:has(+ #settings-ai-pacing-group),
+h3.settings-subheading:has(+ #settings-random-start-group) {
+  display: none !important;
+}
+
+/* Skyscrapers uses a dark board surface; keep its edge clue cells legible. */
+.skyscrapers-clue-cell,
+.skyscrapers-corner {
+  background: var(--square-light, #fff);
+  color: var(--ink, #141413);
+}

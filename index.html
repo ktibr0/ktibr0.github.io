@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="papergames/manifest.json">
   <title>Игротека</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="library/catalog.css">
   <style>
     :root {
       --bg:        #1a1a2e;
@@ -306,17 +308,54 @@
         Играть
       </div>
     </a>
-    <!-- Placeholder -->
-    <div class="card card-soon" aria-hidden="true">
-      <div class="soon-icon">＋</div>
-      <div class="soon-text">Скоро ещё<br>одна игра</div>
-    </div>
+
+    <a class="card papergames-card" href="papergames/sudoku.html" tabindex="0">
+      <div class="card-stripe stripe-gold"></div><div class="card-icon">🔢</div>
+      <div class="card-body"><div class="card-title">Судоку</div><div class="card-desc">Заполни поле цифрами, чтобы они не повторялись в строках, столбцах и квадратах.</div><span class="card-tag">Числа · Логика</span></div>
+      <div class="card-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/nonogram.html" tabindex="0">
+      <div class="card-stripe stripe-teal"></div><div class="card-icon">▦</div>
+      <div class="card-body"><div class="card-title">Японский кроссворд</div><div class="card-desc">Закрась клетки по числам у строк и столбцов, чтобы открыть рисунок.</div><span class="card-tag">Числа · Рисунок</span></div>
+      <div class="card-btn btn-teal"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/kakuro.html" tabindex="0">
+      <div class="card-stripe stripe-red"></div><div class="card-icon">➕</div>
+      <div class="card-body"><div class="card-title">Какуро</div><div class="card-desc">Подбери числа от 1 до 9 так, чтобы совпали суммы по горизонтали и вертикали.</div><span class="card-tag">Числа · Логика</span></div>
+      <div class="card-btn btn-red"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/hashi.html" tabindex="0">
+      <div class="card-stripe stripe-gold"></div><div class="card-icon">🌉</div>
+      <div class="card-body"><div class="card-title">Мосты</div><div class="card-desc">Соедини острова мостами по числам и объедини их в одну сеть.</div><span class="card-tag">Числа · Логика</span></div>
+      <div class="card-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/skyscrapers.html" tabindex="0">
+      <div class="card-stripe stripe-teal"></div><div class="card-icon">🏙️</div>
+      <div class="card-body"><div class="card-title">Небоскрёбы</div><div class="card-desc">Расставь здания разной высоты: числа с краёв показывают, сколько видно.</div><span class="card-tag">Числа · Логика</span></div>
+      <div class="card-btn btn-teal"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/klondike.html" tabindex="0">
+      <div class="card-stripe stripe-red"></div><div class="card-icon">🂡</div>
+      <div class="card-body"><div class="card-title">Косынка</div><div class="card-desc">Разложи пасьянс, чередуя цвета и собирая карты по мастям.</div><span class="card-tag">Карты · Пасьянс</span></div>
+      <div class="card-btn btn-red"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
+    <a class="card papergames-card" href="papergames/freecell.html" tabindex="0">
+      <div class="card-stripe stripe-gold"></div><div class="card-icon">🃏</div>
+      <div class="card-body"><div class="card-title">FreeCell</div><div class="card-desc">Разложи всю колоду по мастям, используя четыре свободные ячейки.</div><span class="card-tag">Карты · Пасьянс</span></div>
+      <div class="card-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Играть</div>
+    </a>
 
   </main>
 
   <footer>
     <p>Сделано с ❤️ для семьи · <a href="https://github.com/ktibr0/ktibr0.github.io" style="color:var(--muted)">GitHub</a></p>
+    <div class="papergames-credit">Игры PaperGames: © 2025 <a href="https://github.com/YourChaosChris">Christopher Müller</a> · <a href="https://github.com/YourChaosChris/PaperGames">исходный проект</a> · <a href="papergames/credits.html">автор и лицензии</a></div>
+    <div class="library-offline"><button type="button" id="library-offline-save">Сохранить для игры без интернета</button><p id="library-offline-status" data-state="idle" role="status" aria-live="polite">Офлайн-копия не проверена.</p><a href="/papergames/index.html">Открыть сохранённую Игротеку</a><small>Без сети работают семь игр PaperGames: Судоку, Нонограммы, Какуро, Мосты, Небоскрёбы, Косынка и FreeCell. Чтобы открыть их без сети, добавьте Игротеку на главный экран: Android — «На главный экран»; iPad — «Поделиться» → «На экран Домой».</small></div>
   </footer>
+
+  <script src="papergames/sw-register.js"></script>
+  <script src="library/force-update.js"></script>
+  <script src="library/offline.js"></script>
 
 </body>
 </html>

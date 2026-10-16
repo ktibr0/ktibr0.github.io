@@ -1,0 +1,16 @@
+{
+  "scope": "./",
+  "background_color": "#ffffff",
+  "short_name": "Игротека",
+  "start_url": "./index.html",
+  "icons": [
+    {
+      "type": "image/png",
+      "sizes": "192x192",
+      "src": "./icon-192.png"
+    }
+  ],
+  "display": "standalone",
+  "name": "Игротека PaperGames",
+  "theme_color": "#ffffff"
+}

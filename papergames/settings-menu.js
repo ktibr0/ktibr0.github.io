@@ -1,0 +1,376 @@
+// settings-menu.js
+// Self-injecting Settings menu: one "Settings" button in every page's
+// header (same technique as rules-link.js/game-switcher.js - injected
+// at runtime rather than hand-written into ~150 static pages) opening a
+// single modal that gathers every on-device setting this app has -
+// language, text size, high contrast, spacing density (density.js),
+// move suggestions (move-hints.js, on games that mark playable cards) and
+// (on pages with a computer opponent) the computer's move speed - instead of each living as
+// its own separate icon button in the header. This also gives the 46
+// game pages a language switcher for the first time: the old static
+// ".lang-switch" markup only ever existed on the ~100 hub pages (home,
+// guide, about, stats, rules/history pages), never on the pages people
+// actually spend most of their time on.
+//
+// This module owns none of the underlying settings themselves - it's
+// purely the shared UI shell around FontSizeToggle, HighContrast,
+// AiPacing and I18n, each of which stays fully usable on its own (e.g. still
+// applies its persisted state on every page load) even if this script
+// somehow failed to load.
+//
+// Backup/restore used to live here too, but Tolino's own browser
+// refuses the file download outright ("Dateiformat wird nicht
+// unterstützt") - confirmed on real hardware - and has no real way to
+// receive an imported file either, so the feature was removed rather
+// than kept as something that only worked on other devices.
+
+// Mode and filter buttons are rendered by many independent game scripts.
+// Keep their pressed state in sync with the shared visual state, including
+// buttons whose initial state comes from static markup.
+(function syncPressedButtons() {
+  const selector = "button.mode-btn, .nonogram-mode-toggle button, .settings-segmented button";
+  function sync(button) {
+    const active = button.classList.contains("active-mode") || button.classList.contains("active");
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  }
+  function syncAll(root) {
+    if (root.matches && root.matches(selector)) sync(root);
+    if (root.querySelectorAll) root.querySelectorAll(selector).forEach(sync);
+  }
+  syncAll(document);
+  if (typeof MutationObserver !== "undefined") {
+    new MutationObserver((records) => {
+      records.forEach((record) => {
+        if (record.type === "attributes" && record.target.matches(selector)) sync(record.target);
+        else record.addedNodes.forEach((node) => { if (node.nodeType === 1) syncAll(node); });
+      });
+    }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
+  }
+})();
+
+const SettingsMenu = (function () {
+  function t(key, fallback) {
+    return (window.I18n && typeof I18n.t === "function") ? I18n.t(key) : fallback;
+  }
+
+  function wireTextSize(overlay) {
+    if (typeof FontSizeToggle === "undefined") return;
+    const group = overlay.querySelector("#settings-textsize-group");
+    if (!group) return;
+    const buttons = Array.prototype.slice.call(group.querySelectorAll("button[data-level]"));
+
+    function refresh() {
+      const current = FontSizeToggle.getLevel();
+      buttons.forEach((btn) => {
+        const active = btn.getAttribute("data-level") === current;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        FontSizeToggle.setLevel(btn.getAttribute("data-level"));
+        refresh();
+      });
+    });
+    refresh();
+  }
+
+  function wireAiPacing(overlay) {
+    if (typeof AiPacing === "undefined") return;
+    const group = overlay.querySelector("#settings-ai-pacing-group");
+    if (!group) return;
+    const buttons = Array.prototype.slice.call(group.querySelectorAll("button[data-mode]"));
+
+    function refresh() {
+      const current = AiPacing.getMode();
+      buttons.forEach((btn) => {
+        const active = btn.getAttribute("data-mode") === current;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        AiPacing.setMode(btn.getAttribute("data-mode"));
+        refresh();
+      });
+    });
+    refresh();
+  }
+
+  function wireDensity(overlay) {
+    if (typeof Density === "undefined") return;
+    const group = overlay.querySelector("#settings-density-group");
+    if (!group) return;
+    const buttons = Array.prototype.slice.call(group.querySelectorAll("button[data-density]"));
+
+    function refresh() {
+      const current = Density.getLevel();
+      buttons.forEach((btn) => {
+        const active = btn.getAttribute("data-density") === current;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        Density.setLevel(btn.getAttribute("data-density"));
+        refresh();
+      });
+    });
+    refresh();
+  }
+
+  function wireRandomStart(overlay) {
+    if (typeof RandomStart === "undefined") return;
+    const group = overlay.querySelector("#settings-random-start-group");
+    if (!group) return;
+    const buttons = Array.prototype.slice.call(group.querySelectorAll("button[data-random]"));
+
+    function refresh() {
+      const current = RandomStart.enabled() ? "1" : "0";
+      buttons.forEach((btn) => {
+        const active = btn.getAttribute("data-random") === current;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        RandomStart.setEnabled(btn.getAttribute("data-random") === "1");
+        refresh();
+      });
+    });
+    refresh();
+  }
+
+  function wireMoveHints(overlay) {
+    if (typeof MoveHints === "undefined") return;
+    const checkbox = overlay.querySelector("#settings-move-hints-checkbox");
+    if (!checkbox) return;
+    checkbox.checked = MoveHints.enabled();
+    checkbox.addEventListener("change", () => {
+      MoveHints.setEnabled(checkbox.checked);
+    });
+  }
+
+  function wireHighContrast(overlay) {
+    if (typeof HighContrast === "undefined") return;
+    const checkbox = overlay.querySelector("#settings-high-contrast-checkbox");
+    if (!checkbox) return;
+    checkbox.checked = HighContrast.isEnabled();
+    checkbox.addEventListener("change", () => {
+      HighContrast.setEnabled(checkbox.checked);
+    });
+  }
+
+  function wireUpdate(overlay) {
+    const btn = overlay.querySelector("#settings-force-update");
+    if (!btn) return;
+    if (typeof ForceUpdate === "undefined") {
+      btn.classList.add("hidden");
+      return;
+    }
+    btn.addEventListener("click", () => ForceUpdate.run(overlay.querySelector("#settings-force-update-status"), btn));
+  }
+
+  // Shows the running version, as answered by the service worker via
+  // offline-status.js (shared with the home page's offline line). On a
+  // first visit the worker is still installing, so this shows how many
+  // files are stored so far ("Checking…" until the first count arrives),
+  // or that storing paused. While a newer version is stored, the version
+  // is followed by "(update loading …)". "Version unknown" appears only
+  // when the app can't be stored at all (no service worker support, a
+  // file:// copy, a refused registration, no storage space).
+  let stopVersionCheck = null;
+
+  function showVersion() {
+    const el = document.getElementById("settings-version-value");
+    if (!el) return;
+    // Reopening the dialog starts over; drop the previous run's timers and
+    // listeners so they can't run twice.
+    if (stopVersionCheck) stopVersionCheck();
+    stopVersionCheck = null;
+
+    function setKey(key, fallback) {
+      el.setAttribute("data-i18n", key);
+      el.textContent = t(key, fallback);
+    }
+    if (typeof OfflineStatus === "undefined") {
+      setKey("settings_version_unknown", "Version unknown");
+      return;
+    }
+    stopVersionCheck = OfflineStatus.watch((state, detail) => {
+      if (state === "ready") {
+        el.removeAttribute("data-i18n");
+        el.textContent = detail.version + (detail.updating ? " " + t("settings_version_updating", "(update loading …)") : "");
+      } else if (state === "loading" && detail.controlled) {
+        el.removeAttribute("data-i18n");
+        el.textContent = "…";
+      } else if (state === "loading" && typeof detail.total === "number") {
+        el.removeAttribute("data-i18n");
+        el.textContent = t("offline_loading_progress", "Being stored for offline use … {n} of {m} files.")
+          .split("{n}").join(String(detail.done)).split("{m}").join(String(detail.total));
+      } else if (state === "loading") {
+        setKey("settings_version_checking", "Checking…");
+      } else if (state === "paused") {
+        setKey("offline_paused", "Storing was interrupted.");
+      } else {
+        setKey("settings_version_unknown", "Version unknown");
+      }
+    });
+  }
+
+  function buildModal() {
+    if (document.getElementById("settings-modal-overlay")) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "settings-modal-overlay";
+    overlay.className = "settings-modal-overlay hidden";
+    overlay.innerHTML =
+      '<div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">' +
+        '<div class="settings-modal-header">' +
+          '<h2 id="settings-modal-title" data-i18n="settings_modal_title">Settings</h2>' +
+          '<button type="button" class="secondary small settings-modal-close" data-i18n-attr="aria-label:settings_close">✕</button>' +
+        '</div>' +
+        '<section class="settings-section">' +
+          '<h3 data-i18n="settings_section_language">Language</h3>' +
+          '<div class="lang-switch"></div>' +
+        '</section>' +
+        '<section class="settings-section">' +
+          '<h3 data-i18n="settings_section_textsize">Text size</h3>' +
+          '<div class="settings-segmented" id="settings-textsize-group" role="group">' +
+            '<button type="button" class="secondary" data-level="normal" data-i18n-attr="aria-label:settings_textsize_normal">A</button>' +
+            '<button type="button" class="secondary" data-level="large" data-i18n-attr="aria-label:settings_textsize_large">A+</button>' +
+            '<button type="button" class="secondary" data-level="xlarge" data-i18n-attr="aria-label:settings_textsize_xlarge">A++</button>' +
+          '</div>' +
+        '</section>' +
+        '<section class="settings-section">' +
+          '<h3 data-i18n="settings_section_display">Display</h3>' +
+          '<label class="settings-checkbox-row">' +
+            '<input type="checkbox" id="settings-high-contrast-checkbox">' +
+            '<span data-i18n="high_contrast_toggle">High contrast</span>' +
+          '</label>' +
+          // Every page that loads this menu also loads density.js; the
+          // check only guards against one that doesn't.
+          (typeof Density !== "undefined"
+            ? '<h3 class="settings-subheading" data-i18n="settings_section_density">Spacing</h3>' +
+              '<div class="settings-segmented" id="settings-density-group" role="group">' +
+                '<button type="button" class="secondary" data-density="compact" data-i18n="settings_density_compact">Compact</button>' +
+                '<button type="button" class="secondary" data-density="normal" data-i18n="settings_density_normal">Normal</button>' +
+                '<button type="button" class="secondary" data-density="spacious" data-i18n="settings_density_spacious">Spacious</button>' +
+              '</div>'
+            : '') +
+          // Every page loads ai-pacing.js; the check only guards against a
+          // page that doesn't.
+          (typeof AiPacing !== "undefined"
+            ? '<h3 class="settings-subheading" data-i18n="settings_section_ai_pacing">Computer speed</h3>' +
+              '<div class="settings-segmented" id="settings-ai-pacing-group" role="group">' +
+                '<button type="button" class="secondary" data-mode="fast" data-i18n="settings_ai_pacing_fast">Fast</button>' +
+                '<button type="button" class="secondary" data-mode="normal" data-i18n="settings_ai_pacing_normal">Normal</button>' +
+                '<button type="button" class="secondary" data-mode="slow" data-i18n="settings_ai_pacing_slow">Slow</button>' +
+              '</div>'
+            : '') +
+          // Only on the games that mark playable cards, tiles or pieces.
+          (typeof MoveHints !== "undefined"
+            ? '<h3 class="settings-subheading" data-i18n="settings_section_move_hints">Move suggestions</h3>' +
+              '<label class="settings-checkbox-row">' +
+                '<input type="checkbox" id="settings-move-hints-checkbox">' +
+                '<span data-i18n="settings_move_hints">Show move suggestions (mark playable cards, tiles and pieces)</span>' +
+              '</label>'
+            : '') +
+          '<h3 class="settings-subheading" data-i18n="settings_section_random_start">Who moves first</h3>' +
+          '<div class="settings-segmented" id="settings-random-start-group" role="group">' +
+            '<button type="button" class="secondary" data-random="0" data-i18n="settings_random_start_chosen">As chosen</button>' +
+            '<button type="button" class="secondary" data-random="1" data-i18n="settings_random_start_random">Random</button>' +
+          '</div>' +
+        '</section>' +
+        // Which version is running (answered by sw.js, the single place it
+        // is kept) and a way to fetch the latest one from any page.
+        '<section class="settings-section settings-version-section">' +
+          '<p class="settings-version-line"><span data-i18n="settings_version_label">Version:</span> ' +
+            '<span id="settings-version-value"></span></p>' +
+          '<button type="button" class="secondary small" id="settings-force-update" data-i18n="guide_update_button">Force update now</button>' +
+          '<p class="settings-version-hint" data-i18n="settings_update_hint">This needs an internet connection.</p>' +
+          '<p id="settings-force-update-status" class="status-text" aria-live="polite"></p>' +
+        '</section>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) hide();
+    });
+    overlay.querySelector(".settings-modal-close").addEventListener("click", hide);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !overlay.classList.contains("hidden")) hide();
+    });
+
+    wireTextSize(overlay);
+    wireHighContrast(overlay);
+    wireMoveHints(overlay);
+    wireDensity(overlay);
+    wireAiPacing(overlay);
+    wireRandomStart(overlay);
+    wireUpdate(overlay);
+
+    // Populates the freshly-inserted .lang-switch <select> and translates
+    // every data-i18n/data-i18n-attr element just added above - both are
+    // exactly what I18n.init() already does for a page's static markup at
+    // load time, just re-run now that this markup exists.
+    if (window.I18n && typeof I18n.init === "function") I18n.init();
+  }
+
+  function show() {
+    buildModal();
+    const overlay = document.getElementById("settings-modal-overlay");
+    if (overlay) overlay.classList.remove("hidden");
+    // A game may have changed its default (a children's version) since the
+    // menu was built.
+    const mh = document.getElementById("settings-move-hints-checkbox");
+    if (mh && typeof MoveHints !== "undefined") mh.checked = MoveHints.enabled();
+    showVersion();
+  }
+
+  function hide() {
+    const overlay = document.getElementById("settings-modal-overlay");
+    if (overlay) overlay.classList.add("hidden");
+  }
+
+  function injectTrigger() {
+    const panel = document.querySelector(".user-panel");
+    if (!panel || document.getElementById("settings-menu-button")) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "settings-menu-button";
+    btn.className = "secondary";
+
+    function setLabel() {
+      btn.textContent = t("settings_menu_button", "⚙ Settings");
+    }
+    setLabel();
+    btn.addEventListener("click", show);
+    panel.insertBefore(btn, panel.firstChild);
+
+    if (window.I18n && typeof I18n.onChange === "function") {
+      I18n.onChange(setLabel);
+    }
+  }
+
+  function init() {
+    injectTrigger();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+
+  return { show, hide };
+})();
+
+if (typeof window !== "undefined") {
+  window.SettingsMenu = SettingsMenu;
+}

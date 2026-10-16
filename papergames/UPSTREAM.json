@@ -1,0 +1,269 @@
+{
+  "commit": "dc564a8a24b4e7bb08f32c0952f19982bc733877",
+  "adaptations": [
+    "Only the seven selected game pages, rules, app handlers, game cores, puzzle data, common helpers, and Russian translation are included.",
+    "Engine and app-handler JavaScript remain unchanged. Game and rules HTML use local navigation, Russian by default, local credits, and the scoped offline controls.",
+    "i18n.js keeps English as its internal source-language constant; the local integration defaults to Russian and offers only Russian and English.",
+    "The local catalog is generated from the root catalog, with old game routes made relative and font requests made optional through system fallbacks.",
+    "The service worker is locally written and registered only with /papergames/ scope; no upstream worker or forced reload behavior is used."
+  ],
+  "sourceFiles": {
+    "skyscrapers-core.js": {
+      "upstreamPath": "skyscrapers-core.js",
+      "gitBlob": "3d4b48a3a4009fd22e91f339683b793c132ca542"
+    },
+    "card-faces.js": {
+      "upstreamPath": "card-faces.js",
+      "gitBlob": "0d95e5d29e726e31a061138fa12863420b894530"
+    },
+    "freecell-app.js": {
+      "upstreamPath": "freecell-app.js",
+      "gitBlob": "377afae4fc7f8ff1328d625f59096b1b35efeae5"
+    },
+    "settings-menu.js": {
+      "upstreamPath": "settings-menu.js",
+      "gitBlob": "5822ea35b65b8403b04b3dd8cab694646a39da0a"
+    },
+    "random-start.js": {
+      "upstreamPath": "random-start.js",
+      "gitBlob": "96c31fa2faaebefa57b1efdc88e814a70fa46a87"
+    },
+    "game-storage.js": {
+      "upstreamPath": "game-storage.js",
+      "gitBlob": "936c733e4ef299cf68836a57127e91e3e81cac03"
+    },
+    "i18n-text.js": {
+      "upstreamPath": "i18n-text.js",
+      "gitBlob": "0d894fcdc2947cff8502d6b11313b19406460f27"
+    },
+    "i18n.js": {
+      "upstreamPath": "i18n.js",
+      "gitBlob": "210cdc8fdcbd188422fd37d46ce5ed681e453844"
+    },
+    "storage-warning.js": {
+      "upstreamPath": "storage-warning.js",
+      "gitBlob": "2a213d3bd2018bf831924641491c58b47c5e7d5b"
+    },
+    "nonogram.html": {
+      "upstreamPath": "nonogram.html",
+      "gitBlob": "61c337d69e0d61350d726e1d95d164bd0e5739e5"
+    },
+    "skyscrapers-rules.html": {
+      "upstreamPath": "skyscrapers-rules.html",
+      "gitBlob": "6dd4b78238870695d3a4513e1c24609fa9c91e59"
+    },
+    "kakuro-puzzles.js": {
+      "upstreamPath": "kakuro-puzzles.js",
+      "gitBlob": "400087413cd14da0ab03e1c813f75fb383876d5c"
+    },
+    "klondike-core.js": {
+      "upstreamPath": "klondike-core.js",
+      "gitBlob": "5d12ee2a578b851e358a5d1a1ea1d5b5cb6f6562"
+    },
+    "kakuro-rules.html": {
+      "upstreamPath": "kakuro-rules.html",
+      "gitBlob": "16de068a0f6ce6fba0b48659c2326b97db8b6d5c"
+    },
+    "nonogram-app.js": {
+      "upstreamPath": "nonogram-app.js",
+      "gitBlob": "3d29ef6baf3f60e5a373697598e5770b35da6b4b"
+    },
+    "klondike-rules.html": {
+      "upstreamPath": "klondike-rules.html",
+      "gitBlob": "6733aea8fa9c5ca71817f538d1370f59eafb1e71"
+    },
+    "nonogram-core.js": {
+      "upstreamPath": "nonogram-core.js",
+      "gitBlob": "cf6f84bb3cb3c8c64c3a95b326b4a3afbba406f6"
+    },
+    "LICENSE": {
+      "upstreamPath": "LICENSE",
+      "gitBlob": "643f2182cfd9f5694bdf00c84ec278a5a5a4b8ae"
+    },
+    "ai-pacing.js": {
+      "upstreamPath": "ai-pacing.js",
+      "gitBlob": "37043e0735e2aedf3bd80f7a29b73867a896c219"
+    },
+    "klondike.html": {
+      "upstreamPath": "klondike.html",
+      "gitBlob": "01db4bcd605c0dd7bc8324ac19ca2fbcb304949c"
+    },
+    "hashi-puzzles.js": {
+      "upstreamPath": "hashi-puzzles.js",
+      "gitBlob": "518c69e56b5fbbd5af8aa87a5d436214fd482ac2"
+    },
+    "result-modal.js": {
+      "upstreamPath": "result-modal.js",
+      "gitBlob": "4279e73c509b1d8e0986220edb8713ecbd838e6f"
+    },
+    "freecell-rules.html": {
+      "upstreamPath": "freecell-rules.html",
+      "gitBlob": "5c0b1994fa3e187804a374ea16f20ddcacff14f1"
+    },
+    "hashi-app.js": {
+      "upstreamPath": "hashi-app.js",
+      "gitBlob": "37c093baa6e9948798c8661e408ddc37638f7fe7"
+    },
+    "sudoku-app.js": {
+      "upstreamPath": "sudoku-app.js",
+      "gitBlob": "22a0fd31c011c98e5a31ef0fc6cec53694b505c5"
+    },
+    "kakuro-core.js": {
+      "upstreamPath": "kakuro-core.js",
+      "gitBlob": "68a4eeb9894e7bd3a2e44ba74b074a833912da60"
+    },
+    "sudoku-core.js": {
+      "upstreamPath": "sudoku-core.js",
+      "gitBlob": "8b691b574429b8ff3043fdadc4dc6f1fc92cf213"
+    },
+    "print-puzzle.js": {
+      "upstreamPath": "print-puzzle.js",
+      "gitBlob": "4179d27ecd3ea60ea4a943e982f2545c095965ee"
+    },
+    "icon-192.png": {
+      "upstreamPath": "icon-192.png",
+      "gitBlob": "ec2d5519f778f579f13a1b214c393cf4915c37b0"
+    },
+    "NOTICE": {
+      "upstreamPath": "NOTICE",
+      "gitBlob": "ce592c7ef239be86301690301788944d383cd085"
+    },
+    "manifest.json": {
+      "upstreamPath": "manifest.json",
+      "gitBlob": "beff9aef6ae9d854ea89673268aaf766bf3632d1"
+    },
+    "hashi-core.js": {
+      "upstreamPath": "hashi-core.js",
+      "gitBlob": "233e2653778b48c34b10ca716762adfe05596e86"
+    },
+    "nonogram-rules.html": {
+      "upstreamPath": "nonogram-rules.html",
+      "gitBlob": "ee0a8d2bb2cd5a238b330065c9c156ba8b671c86"
+    },
+    "freecell.html": {
+      "upstreamPath": "freecell.html",
+      "gitBlob": "e82e6a30f45dbeb34511bf8bf7c1db33e1e12ec7"
+    },
+    "board-a11y.js": {
+      "upstreamPath": "board-a11y.js",
+      "gitBlob": "2688f07f3d35d6e1e826fc50bc561cfb81d0d7c4"
+    },
+    "skyscrapers.html": {
+      "upstreamPath": "skyscrapers.html",
+      "gitBlob": "e3e7f4ea01e2e865d4666e119f73e4095f6992e0"
+    },
+    "hint-engine.js": {
+      "upstreamPath": "hint-engine.js",
+      "gitBlob": "0fc2603864909d4d2fde3080aef6f8cb239d1174"
+    },
+    "daily-challenge.js": {
+      "upstreamPath": "daily-challenge.js",
+      "gitBlob": "1d9d47053f5d8ee222eb4451d8c74321ac5753a2"
+    },
+    "hashi-rules.html": {
+      "upstreamPath": "hashi-rules.html",
+      "gitBlob": "f7026d1181f0174c01b4e7a1923dbb516ae08c36"
+    },
+    "skyscrapers-puzzles.js": {
+      "upstreamPath": "skyscrapers-puzzles.js",
+      "gitBlob": "26d18b315e687e7e4d4225350290143065a95671"
+    },
+    "skyscrapers-app.js": {
+      "upstreamPath": "skyscrapers-app.js",
+      "gitBlob": "f6ae36288b49756647236c182f68ae231b59c23c"
+    },
+    "hashi.html": {
+      "upstreamPath": "hashi.html",
+      "gitBlob": "266eea2c54c3fb83b43159aafb922ca5b7560beb"
+    },
+    "klondike-app.js": {
+      "upstreamPath": "klondike-app.js",
+      "gitBlob": "c0de144e23d6e6e588f7fac10077d4431d458508"
+    },
+    "sudoku-rules.html": {
+      "upstreamPath": "sudoku-rules.html",
+      "gitBlob": "630427c747f966552101afbba63899663324b798"
+    },
+    "confirm-actions.js": {
+      "upstreamPath": "confirm-actions.js",
+      "gitBlob": "6c3ca1a3d2a608533e41f3f2c805ffe85b216f15"
+    },
+    "freecell-core.js": {
+      "upstreamPath": "freecell-core.js",
+      "gitBlob": "a0b8a1124b62e94c77cef8a55e6b5ef91087818e"
+    },
+    "favicon.png": {
+      "upstreamPath": "favicon.png",
+      "gitBlob": "38ae2937c575a0622e479f86e3dc92ab467f003d"
+    },
+    "density.js": {
+      "upstreamPath": "density.js",
+      "gitBlob": "40a231d6a28afe7041e5bcfd6eea5b5778c6677e"
+    },
+    "quick-rules.js": {
+      "upstreamPath": "quick-rules.js",
+      "gitBlob": "9112922c5178e782a8f42ff8f5b521b95d8f54b0"
+    },
+    "game-stats.js": {
+      "upstreamPath": "game-stats.js",
+      "gitBlob": "eddaeda643d4722b0bf2813a73a84dce0abdc7da"
+    },
+    "nonogram-puzzles.js": {
+      "upstreamPath": "nonogram-puzzles.js",
+      "gitBlob": "66903eef1382cdc9ff41fc5e1f8f35a8720823ad"
+    },
+    "lang/ru-text.js": {
+      "upstreamPath": "lang/ru-text.js",
+      "gitBlob": "bf3877696539b46010b3e9b742f19f6aa6d3bead"
+    },
+    "font-size-toggle.js": {
+      "upstreamPath": "font-size-toggle.js",
+      "gitBlob": "e4ef925341189c59d6eac6de0f0fbefd1a701169"
+    },
+    "kakuro.html": {
+      "upstreamPath": "kakuro.html",
+      "gitBlob": "90699c3c0b54d6f3797c9d85337309baf8be92f9"
+    },
+    "error-banner.js": {
+      "upstreamPath": "error-banner.js",
+      "gitBlob": "9899e501682a32c49262cbab1207dd930938ae43"
+    },
+    "rules-link.js": {
+      "upstreamPath": "rules-link.js",
+      "gitBlob": "94ebeddb84156e09eea57e2a4af3f19f15ca8ea2"
+    },
+    "high-contrast.js": {
+      "upstreamPath": "high-contrast.js",
+      "gitBlob": "588793f855b8a74cb8fc42c837c9f2a6a23d3e22"
+    },
+    "sudoku.html": {
+      "upstreamPath": "sudoku.html",
+      "gitBlob": "d8a24c6754d08e0df4a6938d0789accc41ae3aa5"
+    },
+    "kakuro-app.js": {
+      "upstreamPath": "kakuro-app.js",
+      "gitBlob": "233e0b5d749443cdc9c2023410aaeaeffa8a444a"
+    },
+    "lang/ru.js": {
+      "upstreamPath": "lang/ru.js",
+      "gitBlob": "16e5c5004d4c4901f1cfc34178a8737a625fd163"
+    },
+    "style.css": {
+      "upstreamPath": "style.css",
+      "gitBlob": "b26d375fb5eac87100edd369925fac37ad03a3f3"
+    }
+  },
+  "project": "PaperGames by Christopher Müller",
+  "archiveSha256": "C8EBE4969F00771EEF64C46CD9116250A4ECC93E82B9ED039B270D515B68CE2D",
+  "selectedGames": [
+    "sudoku",
+    "nonogram",
+    "kakuro",
+    "hashi",
+    "skyscrapers",
+    "klondike",
+    "freecell"
+  ],
+  "archive": "https://codeload.github.com/YourChaosChris/PaperGames/tar.gz/dc564a8a24b4e7bb08f32c0952f19982bc733877",
+  "repository": "https://github.com/YourChaosChris/PaperGames"
+}
