@@ -18,3 +18,5 @@ The browser runner starts a local HTTP server and launches Chromium and WebKit. 
 Network sandbox errors accessing localhost are environment failures; retry the same narrowly scoped runner with the system PowerShell and required escalation per AGENTS. Do not change application behavior to accommodate a denied local network.
 
 Geometry assertions do not replace screenshot review. Browser engines do not certify physical iPad/Android behavior.
+
+After a successful Pages deployment, run `node tests/games/published.cjs` for HTTP/content equality of the eight game files. Run the browser suite with `TEST_BASE_URL=https://ktibr0.github.io` and `TEST_FILTER=real cycle|Sumplete sizes3.*1024x768|RSVP real guest seating|RSVP real runtime` for the eight public smoke scenarios. RSVP seating uses click/release at the source, then click/release at the chair, with frame dwell; dragging while holding is not its input contract.
