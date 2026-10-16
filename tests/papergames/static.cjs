@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');const path=require('node:path');const crypto=require('node:crypto');const cp=require('node:child_process');
 const root=path.resolve(__dirname,'../..');const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const slugs=['sudoku','nonogram','kakuro','hashi','skyscrapers','klondike','freecell'];
-const baselineRef=process.env.PAPERGAMES_BASE_COMMIT || 'f24dfce';
+const baselineRef=process.env.PAPERGAMES_BASE_COMMIT || '9c41355';
 const baseline=cp.execFileSync('git',['show',baselineRef+':index.html'],{cwd:root,encoding:'utf8'}).replace(/\r\n/g,'\n');
 const main=read('index.html').replace(/\r\n/g,'\n');
 for(const href of ['cryptographer/index.html','https://arcomage.github.io/','rsvp/index.html','jellybattle/index.html','sumplete/index.html']){
