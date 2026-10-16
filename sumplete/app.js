@@ -152,7 +152,14 @@
     grid.style.width = ((n + 1) * cell + n * 2 + 8) + 'px';
   }
   window.addEventListener('resize', fitBoard);
-  new ResizeObserver(fitBoard).observe(boardScroll);
+  let observedBoardWidth = -1;
+  new ResizeObserver(entries => {
+    const width = entries[0].contentRect.width;
+    if (width === observedBoardWidth) return;
+    observedBoardWidth = width;
+    // Resize only after observer delivery; our own height changes need no fit.
+    requestAnimationFrame(fitBoard);
+  }).observe(boardScroll);
 
   function updateCompletion() {
     const solved = Game.isSolved(save.puzzle, save.states);
