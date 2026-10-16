@@ -1,61 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
-    <title>Самплет</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta
-      name="description"
-      content="Логическая игра-головоломка, созданная искусственным интеллектом"
-    />
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Совместная числовая головоломка на суммы строк, столбцов и диагонали." />
+    <meta name="theme-color" content="#f5f0e8" />
+    <title>Самплет — Игротека</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
-
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("sw.js")
-          .then((registration) => console.log("Service worker registered"))
-          .catch((error) =>
-            console.log("Service worker registration failed:", error)
-          );
-      }
-    </script>
+    <script defer src="game.js"></script>
+    <script defer src="generator.js"></script>
+    <script defer src="app.js"></script>
   </head>
   <body>
     <header>
+      <a class="back" href="../">← В Игротеку</a>
       <h1>Самплет</h1>
-      <h2>Удаляйте числа, чтобы суммы строк и столбцов совпадали с целевыми</h2>
+      <p>Отмечайте числа, которые нужно убрать. Суммы справа, снизу и по главной диагонали должны совпасть с целями.</p>
     </header>
+    <main>
+      <section class="board-panel" aria-label="Игровое поле">
+        <div class="board-scroll" id="board-scroll">
+          <div class="grid" id="grid" role="group" aria-label="Числовое поле"></div>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+        <p class="storage-status" id="storage-status" role="status" aria-live="polite"></p>
+        <p class="complete hidden" id="complete">🎉 Все целевые суммы совпали. Головоломка решена!</p>
+        <p class="revealed hidden" id="revealed">Показано допустимое решение этой головоломки.</p>
+      </section>
 
-    <div id="game-area">
-      <div class="grid" id="grid"></div>
-
-      <div class="controls">
-        <button id="mistakes">Ошибки</button>
-        <button id="hint">Подсказка</button>
-        <button id="restart">Начать заново</button>
-        <button id="reveal" class="danger">Показать</button>
-        <button id="remove" class="hidden danger">Убрать ошибки</button>
-      </div>
-
-      <h2 class="complete hidden">🎉 Головоломка решена! Отлично!</h2>
-      <h2 class="revealed hidden">В следующий раз повезёт больше!</h2>
-
-      <div class="new hidden">
-        <select id="size">
-          <option value="3">3×3 (Новичок)</option>
-          <option value="4">4×4 (Лёгкий)</option>
-          <option value="5">5×5 (Средний)</option>
-          <option value="6">6×6 (Сложный)</option>
-          <option value="7">7×7 (Продвинутый)</option>
-          <option value="8">8×8 (Эксперт)</option>
-          <option value="9">9×9 (Мастер)</option>
-        </select>
-        <button id="new" class="primary">Новая головоломка</button>
-      </div>
-    </div>
-
-    <script src="app.js"></script>
+      <aside class="side-panel" aria-label="Управление">
+        <div class="group">
+          <h2>Отметка клетки</h2>
+          <div class="mode-buttons" role="group" aria-label="Режим отметки">
+            <button id="mode-cycle" type="button" aria-pressed="true">Цикл</button>
+            <button id="mode-keep" type="button" aria-pressed="false">Оставить</button>
+            <button id="mode-remove" type="button" aria-pressed="false">Убрать</button>
+            <button id="mode-clear" type="button" aria-pressed="false">Снять отметку</button>
+          </div>
+          <p class="sum-list">В цикле: неизвестно → убрать → оставить → неизвестно. Стартовые зелёные отметки можно менять.</p>
+          <p class="sum-list">В суммах крупно показано текущее значение, ниже — цель. Неотмеченные числа входят в сумму. Главная диагональ идёт ↘ сверху слева вниз направо и подчёркнута золотом.</p>
+        </div>
+        <div class="group">
+          <h2>Действия</h2>
+          <div class="controls">
+            <button id="mistakes" type="button">Проверить отметки</button>
+            <button id="hint" type="button">Подсказка</button>
+            <button id="undo" type="button" disabled>Отменить</button>
+            <button id="restart" type="button">Сбросить поле</button>
+            <button id="reveal" type="button" class="danger">Показать решение</button>
+          </div>
+        </div>
+        <div class="group">
+          <h2>Новая партия</h2>
+          <p class="sum-list" role="status" aria-live="polite">Логика этой партии: <span id="logic-level">Определяю…</span></p>
+          <label for="size">Размер поля</label>
+          <select id="size" aria-label="Размер поля">
+            <option value="3">3 × 3</option><option value="4">4 × 4</option>
+            <option value="5">5 × 5</option><option value="6">6 × 6</option>
+            <option value="7">7 × 7</option><option value="8">8 × 8</option>
+            <option value="9">9 × 9</option>
+          </select>
+          <button id="new" type="button" class="primary">Новая головоломка</button>
+        </div>
+        <p class="notice hidden" id="generation-notice"></p>
+      </aside>
+    </main>
   </body>
 </html>

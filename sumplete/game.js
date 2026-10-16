@@ -172,17 +172,98 @@
     return wrong;
   }
 
+  function analyzeLogic(puzzle, states, options) {
+    validatePuzzle(puzzle);
+    const current = validateStates(puzzle, states).slice();
+    options = options || {};
+    const n = puzzle.size;
+    const maxPasses = options.maxPasses === undefined ? n * n + 1 : options.maxPasses;
+    const maxChecks = options.maxChecks === undefined ? 250000 : options.maxChecks;
+    const deadline = options.deadline === undefined ? Date.now() + 100 : options.deadline;
+    if (!Number.isSafeInteger(maxPasses) || maxPasses < 0 || !Number.isSafeInteger(maxChecks) || maxChecks < 0 || typeof deadline !== "number") {
+      throw new TypeError("Бюджет логического анализа задан неверно.");
+    }
+
+    const lines = [];
+    for (let r = 0; r < n; r++) lines.push({ kind: "row", line: r, target: puzzle.rowTargets[r], indices: Array.from({ length: n }, (_, c) => r * n + c) });
+    for (let c = 0; c < n; c++) lines.push({ kind: "column", line: c, target: puzzle.columnTargets[c], indices: Array.from({ length: n }, (_, r) => r * n + c) });
+    lines.push({ kind: "diagonal", line: 0, target: puzzle.diagonalTarget, indices: Array.from({ length: n }, (_, i) => i * n + i) });
+
+    const steps = [];
+    let checks = 0, exhausted = false, contradiction = false;
+    for (let pass = 0; pass < maxPasses; pass++) {
+      let changed = false;
+      for (const line of lines) {
+        if (Date.now() > deadline || checks >= maxChecks) { exhausted = true; break; }
+        const candidates = [];
+        for (let mask = 0; mask < (1 << n); mask++) {
+          if (Date.now() > deadline || checks >= maxChecks) { exhausted = true; break; }
+          checks++;
+          let sum = 0, compatible = true;
+          for (let slot = 0; slot < n; slot++) {
+            const on = !!(mask & (1 << slot));
+            const known = current[line.indices[slot]];
+            if ((known === 1 && !on) || (known === -1 && on)) { compatible = false; break; }
+            if (on) sum += puzzle.numbers[Math.floor(line.indices[slot] / n)][line.indices[slot] % n];
+          }
+          if (compatible && sum === line.target) candidates.push(mask);
+        }
+        if (exhausted) break;
+        if (candidates.length === 0) { contradiction = true; break; }
+        for (let slot = 0; slot < n; slot++) {
+          const index = line.indices[slot];
+          if (current[index] !== 0) continue;
+          const keptEverywhere = candidates.every(mask => !!(mask & (1 << slot)));
+          const removedEverywhere = candidates.every(mask => !(mask & (1 << slot)));
+          if (!keptEverywhere && !removedEverywhere) continue;
+          const state = keptEverywhere ? 1 : -1;
+          current[index] = state;
+          steps.push({ index, state, kind: line.kind, line: line.line, target: line.target });
+          changed = true;
+        }
+        if (contradiction) break;
+      }
+      if (contradiction || exhausted || !changed) break;
+      if (pass === maxPasses - 1) exhausted = true;
+    }
+    const solved = !contradiction && !exhausted && current.every(v => v !== 0) && isSolved(puzzle, current);
+    return { solved, contradiction, exhausted, states: current, steps };
+  }
+
+  function lineName(kind, line) {
+    if (kind === "row") return `Строка ${line + 1}`;
+    if (kind === "column") return `Столбец ${line + 1}`;
+    return "Главная диагональ";
+  }
+
   function hint(puzzle, states, options) {
     validatePuzzle(puzzle);
     const values = validateStates(puzzle, states);
     const searchOptions = options || { maxNodes: 200000, deadline: Date.now() + 150 };
     const result = solve(puzzle, { ...searchOptions, states: values });
     if (result.exhausted || result.count === 0) return null;
+    const logic = analyzeLogic(puzzle, values, {
+      deadline: searchOptions.deadline === undefined ? Date.now() + 100 : searchOptions.deadline,
+      maxChecks: searchOptions.maxLogicChecks
+    });
+    if (logic.steps.length > 0) {
+      const step = logic.steps[0];
+      return {
+        ...step,
+        reason: `${lineName(step.kind, step.line)}: среди всех вариантов с суммой ${step.target}, совместимых с текущими отметками, это число всегда нужно ${step.state === 1 ? "оставить" : "убрать"}.`
+      };
+    }
     for (let i = 0; i < values.length; i++) if (values[i] === 0) {
       const opposite = values.slice();
       opposite[i] = -result.solutions[0][i];
       const alternative = solve(puzzle, { ...searchOptions, states: opposite });
-      if (!alternative.exhausted && alternative.count === 0) return { index: i, state: result.solutions[0][i] };
+      if (!alternative.exhausted && alternative.count === 0) {
+        return {
+          index: i,
+          state: result.solutions[0][i],
+          reason: `Совместный анализ нескольких сумм подтверждает: во всех допустимых решениях это число нужно ${result.solutions[0][i] === 1 ? "оставить" : "убрать"}.`
+        };
+      }
     }
     return null;
   }
@@ -208,5 +289,5 @@
     return value;
   }
 
-  return { MIN_SIZE, MAX_SIZE, MAX_HISTORY, validatePuzzle, validateStates, validateSave, targets, isSolved, solve, mistakes, hint };
+  return { MIN_SIZE, MAX_SIZE, MAX_HISTORY, validatePuzzle, validateStates, validateSave, targets, isSolved, solve, mistakes, analyzeLogic, hint };
 });
