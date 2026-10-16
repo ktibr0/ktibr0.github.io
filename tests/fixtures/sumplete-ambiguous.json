@@ -1,0 +1,185 @@
+{
+  "description": "Concrete ambiguous Sumplete boards found 2026-10-16; bit j of rowMasks[i] retains column j (leftmost = bit 0). Initial green cells are editable in current UI.",
+  "cases": [
+    {
+      "size": 5,
+      "numbers": [
+        [
+          8,
+          4,
+          7,
+          3,
+          2
+        ],
+        [
+          4,
+          7,
+          6,
+          4,
+          1
+        ],
+        [
+          4,
+          8,
+          6,
+          4,
+          5
+        ],
+        [
+          7,
+          3,
+          1,
+          2,
+          3
+        ],
+        [
+          6,
+          8,
+          1,
+          7,
+          1
+        ]
+      ],
+      "rowTargets": [
+        7,
+        12,
+        23,
+        6,
+        23
+      ],
+      "columnTargets": [
+        10,
+        26,
+        15,
+        13,
+        7
+      ],
+      "diagonalTarget": 16,
+      "rowMasks": [
+        [
+          4,
+          19,
+          30,
+          14,
+          31
+        ],
+        [
+          4,
+          26,
+          23,
+          14,
+          31
+        ]
+      ],
+      "minimumSolutionCount": 2
+    },
+    {
+      "size": 7,
+      "numbers": [
+        [
+          4,
+          3,
+          2,
+          9,
+          1,
+          2,
+          3
+        ],
+        [
+          2,
+          8,
+          9,
+          5,
+          9,
+          3,
+          9
+        ],
+        [
+          8,
+          1,
+          1,
+          6,
+          4,
+          1,
+          9
+        ],
+        [
+          4,
+          1,
+          8,
+          9,
+          2,
+          1,
+          3
+        ],
+        [
+          5,
+          7,
+          1,
+          8,
+          4,
+          2,
+          3
+        ],
+        [
+          2,
+          4,
+          7,
+          9,
+          3,
+          2,
+          7
+        ],
+        [
+          2,
+          4,
+          8,
+          5,
+          6,
+          5,
+          8
+        ]
+      ],
+      "rowTargets": [
+        7,
+        34,
+        13,
+        14,
+        0,
+        20,
+        24
+      ],
+      "columnTargets": [
+        14,
+        16,
+        0,
+        28,
+        23,
+        11,
+        20
+      ],
+      "diagonalTarget": 27,
+      "rowMasks": [
+        [
+          82,
+          122,
+          19,
+          41,
+          0,
+          59,
+          120
+        ],
+        [
+          82,
+          122,
+          49,
+          11,
+          0,
+          59,
+          120
+        ]
+      ],
+      "minimumSolutionCount": 2
+    }
+  ]
+}
