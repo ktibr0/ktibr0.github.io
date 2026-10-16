@@ -1,6 +1,6 @@
 # Sumplete и RSVP — выпуск 16.10.2026
 
-Локальная приёмка завершена. Публикация и публичная приёмка проверяются отдельно ниже.
+Этап завершён: изменения опубликованы в GitHub Pages и Forgejo, локальная и публичная приёмка пройдены.
 
 ## Что изменено
 
@@ -25,7 +25,7 @@ RSVP получил русскую оболочку: явный старт, со
 
 Доказательства и промежуточные ошибки сохранены в `_work/sumplete-rsvp/`. Повторение: `tests/games/README.md`. Браузеры требуют разрешённого доступа к localhost; sandbox network failures отделены от продуктовых сбоев.
 
-Первый публичный smoke выявил дополнительный сбой WebKit при resize: `ResizeObserver loop completed with undelivered notifications.` Обработчик Sumplete теперь реагирует только на изменение ширины и переносит изменение layout в следующий кадр. Ошибка не скрывается фильтром тестов; исходные 7/8 и журнал сохранены в `live-first-*`, исправление проходит отдельный прогон.
+Первый публичный smoke выявил дополнительный сбой WebKit при resize: `ResizeObserver loop completed with undelivered notifications.` Обработчик Sumplete теперь реагирует только на изменение ширины и переносит изменение layout в следующий кадр. Ошибка не скрывается фильтром тестов; исходные 7/8 и журнал сохранены в `live-first-*`, исправление прошло 12/12 целевых локальных проверок и повторный публичный smoke 8/8 без ошибки.
 
 ## Ограничения
 
@@ -35,4 +35,8 @@ Jelly Battle, ZIP, главная и ArcoMage, общий `rsvp/ruffle/`, `rsvp.
 
 ## Публикация
 
-Ожидает проверки: push в Forgejo/GitHub, успешный Pages deploy, совпадение восьми публичных файлов и публичный smoke в обоих движках.
+Игровой выпуск с исправлением: `9c413558188abd6bdddcac5e4ca865f42f2f9afd`, main отправлен в оба remotes; SHA сверены. [Pages build/deployment 38874879566](https://github.com/ktibr0/ktibr0.github.io/actions/runs/38874879566): completed/success.
+
+Публичные HTML/CSS/JS: **8/8**, HTTP 200 и точное совпадение с локальными файлами после нормализации CRLF/LF. Публичный smoke **8/8**, Chromium + WebKit: реальные отметки/hint/undo/reload, генерация 3…9 на планшете, RSVP runtime/mute и реальная посадка гостя. Ошибок страницы, включая ResizeObserver, нет. Итоги: `published-files.json`, `live-results.json`, `published-output.txt`, `live-output.txt` в `_work/sumplete-rsvp/`.
+
+Последующий коммит закрытия содержит только документацию; игровые файлы остаются теми же, что прошли публичную приёмку.
