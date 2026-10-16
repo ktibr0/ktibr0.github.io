@@ -25,6 +25,7 @@
 
 ## Работы и исследования
 
+- [Миграция семи игр PaperGames](docs/PAPERGAMES-MIGRATION.md): собственная копия, единый каталог, автономная установка, сохранение авторства.
 - [TODO по этапам](TODO.md).
 - [Обзор с доказательствами и ограничениями](docs/LIBRARY-AUDIT.md).
 - [Собственное размещение ArcoMage](docs/ARCOMAGE-SELF-HOSTING.md).

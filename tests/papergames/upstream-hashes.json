@@ -1,0 +1,18 @@
+{
+  "commit": "dc564a8a24b4e7bb08f32c0952f19982bc733877",
+  "files": {
+    "LICENSE": "643f2182cfd9f5694bdf00c84ec278a5a5a4b8ae",
+    "NOTICE": "ce592c7ef239be86301690301788944d383cd085",
+    "freecell-core.js": "a0b8a1124b62e94c77cef8a55e6b5ef91087818e",
+    "hashi-core.js": "233e2653778b48c34b10ca716762adfe05596e86",
+    "hashi-puzzles.js": "518c69e56b5fbbd5af8aa87a5d436214fd482ac2",
+    "kakuro-core.js": "68a4eeb9894e7bd3a2e44ba74b074a833912da60",
+    "kakuro-puzzles.js": "400087413cd14da0ab03e1c813f75fb383876d5c",
+    "klondike-core.js": "5d12ee2a578b851e358a5d1a1ea1d5b5cb6f6562",
+    "nonogram-core.js": "cf6f84bb3cb3c8c64c3a95b326b4a3afbba406f6",
+    "nonogram-puzzles.js": "66903eef1382cdc9ff41fc5e1f8f35a8720823ad",
+    "skyscrapers-core.js": "3d4b48a3a4009fd22e91f339683b793c132ca542",
+    "skyscrapers-puzzles.js": "26d18b315e687e7e4d4225350290143065a95671",
+    "sudoku-core.js": "8b691b574429b8ff3043fdadc4dc6f1fc92cf213"
+  }
+}
