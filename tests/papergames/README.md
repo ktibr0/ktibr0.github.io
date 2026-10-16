@@ -5,6 +5,7 @@
 ```text
 node tests/papergames/static.cjs
 node tests/papergames/acceptance.cjs
+node tests/papergames/published.cjs
 node tests/cryptographer/rules.cjs
 node tests/cryptographer/acceptance.cjs
 ```
@@ -20,3 +21,5 @@ node tests/cryptographer/acceptance.cjs
 После публикации повторный запуск с `PAPERGAMES_BASE_URL=https://ktibr0.github.io` сохраняет результаты в `_work/papergames/live/`. Внешний сервер не предоставляет тестовых маршрутов: проверки искусственного сбоя и посторонней регистрации выполняются только локально. Остальные сценарии, включая настоящий офлайн, выполняются и публично.
 
 Пределы: это проверка интеграции оригинальных движков, а не доказательство корректности всех генерируемых головоломок. Хеши исходных игровых ядер и наборов задач фиксируются независимо от manifest реализации. Headless WebKit не заменяет приёмку на физическом iPad.
+
+`published.cjs` запускается после deploy и проверяет весь публичный пакет (71 файл: HTTP 200 и совпадение SHA-256; CRLF/LF нормализуются для текстов). `PAPERGAMES_RELEASE_SHA` добавляется к URL как cache-busting; результаты — `_work/papergames/published-files.json`. Последняя приёмка: local/run5 — 26/26, live/run1 — 21 PASS / 0 FAIL / 1 явный skip указанного дефекта WebKit, все native exit 0.
