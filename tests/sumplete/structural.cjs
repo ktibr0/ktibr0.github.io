@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const cp=require('node:child_process');
+const path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+const old=cp.execFileSync('git',['show','68e1120:sumplete/index.html'],{cwd:root,encoding:'utf8'}).replace(/\r\n/g,'\n');
+const html=fs.readFileSync(path.join(root,'sumplete/index.html'),'utf8').replace(/\r\n/g,'\n');
+assert.equal(fs.readFileSync(path.join(root,'sumplete/style.css'),'utf8').replace(/\r\n/g,'\n').trim(),old.match(/<style>([\s\S]*?)<\/style>/)[1].trim());
+const scripts=[...old.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+assert.equal(fs.readFileSync(path.join(root,'sumplete/app.js'),'utf8').replace(/\r\n/g,'\n').trim(),scripts.at(-1)[1].trim());
+assert(html.indexOf('src="app.js"')>html.indexOf('id="new"'));
+assert(html.includes(scripts[0][0]));
+console.log('PASS structural CSS/JS exact extraction, SW and script ordering');
