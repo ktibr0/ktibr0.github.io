@@ -8,8 +8,13 @@ const results=[];const hash=b=>crypto.createHash('sha256').update(b).digest('hex
  let cursor=0;
  await Promise.all(Array.from({length:8},async()=>{while(cursor<rows.length){const row=rows[cursor++];try{
   const response=await fetch(base+'/arcomage-hd/'+row.path+'?acceptance='+manifest.adaptation.serviceWorkerCache);assert.equal(response.status,200,row.path);
-  const data=Buffer.from(await response.arrayBuffer());assert.equal(hash(data),row.publishedSha256,'Git-normalized public bytes '+row.path);results.push({file:row.path,pass:true});
+  const data=Buffer.from(await response.arrayBuffer());const rawMatch=hash(data)===row.sha256;
+  // Pages checkout honors .gitattributes eol=crlf, so it may publish checkout
+  // bytes rather than normalized Git blobs. Accept only exact bytes or the
+  // separately recorded LF canonical form of a text file; binaries stay exact.
+  const canonical=/\.(html|js|css|json|webmanifest|svg|txt|md)$/.test(row.path)?Buffer.from(data.toString().replace(/\r\n/g,'\n')):data;
+  assert(rawMatch||hash(canonical)===row.publishedSha256,'public contents '+row.path);results.push({file:row.path,pass:true,rawMatch});
  }catch(e){results.push({file:row.path,pass:false,error:e.message})}}}));
  for(const page of ['/','/papergames/index.html']){const response=await fetch(base+page);assert.equal(response.status,200);const html=await response.text();assert(/href="(?:\.\.\/)?arcomage-hd\/"/.test(html),'local ArcoMage link '+page)}
- fs.writeFileSync(path.join(evidence,'public-files.json'),JSON.stringify(results,null,2));const failed=results.filter(r=>!r.pass);console.log(results.length-failed.length+'/'+results.length+' matching public files; local links in both catalogs');if(failed.length){console.error(failed);process.exitCode=1}
+ fs.writeFileSync(path.join(evidence,'public-files.json'),JSON.stringify(results,null,2));const failed=results.filter(r=>!r.pass);console.log(results.length-failed.length+'/'+results.length+' matching public files ('+results.filter(r=>r.rawMatch).length+' byte-identical); local links in both catalogs');if(failed.length){console.error(failed);process.exitCode=1}
 })().catch(e=>{console.error(e);process.exitCode=1});

@@ -17,7 +17,7 @@ node tests/arcomage/published.cjs
 
 Variables: `TEST_ENGINES=chromium,webkit`, `PLAYWRIGHT_MODULE_ROOT` (directory containing playwright), `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, `PLAYWRIGHT_WEBKIT_EXECUTABLE`, `ARCOMAGE_RUN_ID` for a new evidence directory. Default paths follow this workspace's documented Windows environment.
 
-Set `ARCOMAGE_BASE_URL=https://ktibr0.github.io` to run the public browser scenarios; public runs do not modify the host worker or shut down the origin. `published.cjs` compares all accepted distribution files with the public Git-normalized SHA-256 and checks both catalog links. Browser offline simulation on Windows WebKit is supplementary: the local acceptance with a stopped origin provides the stronger offline result.
+Set `ARCOMAGE_BASE_URL=https://ktibr0.github.io` to run the public browser scenarios; public runs do not modify the host worker or shut down the origin. `published.cjs` compares all accepted distribution files, records byte-identical matches and permits only CRLF/LF normalization for text against its separate canonical SHA. Binary files must match exactly. It also checks both catalog links. Public Windows WebKit setOffline emulation is an explicit SKIP due to [Playwright #42775](https://github.com/microsoft/playwright/issues/42775), also reproduced in this release. The local acceptance with a genuinely stopped origin remains mandatory and provides the stronger offline result.
 
 `navigation.cjs` clicks ArcoMage from both catalogs in both engines and requires the local game to open in the same tab. It supports the same browser-path variables and `ARCOMAGE_BASE_URL` for the public check.
 
