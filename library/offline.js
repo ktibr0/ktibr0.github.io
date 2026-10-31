@@ -1,6 +1,6 @@
 (function (global) {
   "use strict";
-  const CACHE_NAME = 'papergames-mirror-20261016-v1';
+  const CACHE_NAME = 'papergames-mirror-20261031-v2';
   const EXPECTED = [
     '/papergames/index.html','/papergames/credits.html','/papergames/manifest.json','/papergames/sw.js','/papergames/sw-register.js',
     '/papergames/sudoku.html','/papergames/sudoku-rules.html','/papergames/nonogram.html','/papergames/nonogram-rules.html',

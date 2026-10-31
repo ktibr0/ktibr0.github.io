@@ -1,5 +1,5 @@
 /* PaperGames mirror worker. Its registration scope is /papergames/ only. */
-const CACHE_NAME = 'papergames-mirror-20261016-v1';
+const CACHE_NAME = 'papergames-mirror-20261031-v2';
 const CACHE_PREFIX = 'papergames-mirror-';
 const PRECACHE_URLS = [
   '/papergames/index.html','/papergames/credits.html','/papergames/manifest.json','/papergames/sw.js','/papergames/sw-register.js',

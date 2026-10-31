@@ -7,8 +7,11 @@ const baselineRef=process.env.PAPERGAMES_BASE_COMMIT || '9c41355';
 const baseline=cp.execFileSync('git',['show',baselineRef+':index.html'],{cwd:root,encoding:'utf8'}).replace(/\r\n/g,'\n');
 const main=read('index.html').replace(/\r\n/g,'\n');
 for(const href of ['cryptographer/index.html','https://arcomage.github.io/','rsvp/index.html','jellybattle/index.html','sumplete/index.html']){
- const block=html=>{const s=html.indexOf('<a class="card" href="'+href+'"');assert(s>=0,href);return html.slice(s,html.indexOf('</a>',s)+4);};
- assert.equal(block(main),block(baseline),'preserve existing card '+href);
+ const block=(html,target)=>{const s=html.indexOf('<a class="card" href="'+target+'"');assert(s>=0,target);return html.slice(s,html.indexOf('</a>',s)+4);};
+ // ArcoMage's separately accepted migration changes only this navigation link.
+ const migrated=href==='https://arcomage.github.io/';
+ const expected=migrated?block(baseline,href).replace('href="'+href+'" target="_blank" rel="noopener"','href="arcomage-hd/"'):block(baseline,href);
+ assert.equal(block(main,migrated?'arcomage-hd/':href),expected,'preserve existing card '+href);
 }
 const changed=cp.execFileSync('git',['diff',baselineRef,'--name-only'],{cwd:root,encoding:'utf8'}).trim().split(/\r?\n/);
 for(const f of changed)assert(!/^(?:jellybattle\/|jellybattle\.zip$|rsvp\/|sumplete\/|cryptographer\/)/.test(f),'protected game modified '+f);

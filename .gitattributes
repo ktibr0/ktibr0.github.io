@@ -1,0 +1,20 @@
+arcomage-hd/*.html text eol=crlf
+arcomage-hd/**/*.html text eol=crlf
+arcomage-hd/*.js text eol=crlf
+arcomage-hd/**/*.js text eol=crlf
+arcomage-hd/*.css text eol=crlf
+arcomage-hd/**/*.css text eol=crlf
+arcomage-hd/*.json text eol=crlf
+arcomage-hd/**/*.json text eol=crlf
+arcomage-hd/*.webmanifest text eol=crlf
+arcomage-hd/**/*.webmanifest text eol=crlf
+arcomage-hd/*.svg text eol=crlf
+arcomage-hd/**/*.svg text eol=crlf
+arcomage-hd/*.txt text eol=crlf
+arcomage-hd/**/*.txt text eol=crlf
+
+arcomage-hd/sw.js text eol=lf
+arcomage-hd/registerSW.js text eol=lf
+arcomage-hd/CREDIT.md text eol=lf whitespace=-blank-at-eol
+arcomage-hd/README.md text eol=lf
+arcomage-hd/build-manifest.json text eol=lf
